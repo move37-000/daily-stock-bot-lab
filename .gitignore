@@ -8,3 +8,4 @@ venv/
 data/
 reports/
 .DS_Store
+.idea
