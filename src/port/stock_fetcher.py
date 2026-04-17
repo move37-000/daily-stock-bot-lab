@@ -1,4 +1,5 @@
 from typing import Protocol
+
 from src.domain.stock import StockSnapshot
 
 
