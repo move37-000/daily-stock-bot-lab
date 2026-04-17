@@ -43,7 +43,7 @@ class StockSnapshot:
 
     @property
     def formatted_change_pct(self) -> str:
-        """부호 포함 변동률 (예: '+1.73', '-0.45')"""
+        """부호 포함 변동률 (예: '+1.73', '-0.45')""" 
         return f"{self.change_pct:+.2f}"
 
     @property
