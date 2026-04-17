@@ -4,4 +4,4 @@ from src.port.stock_fetcher import StockFetcher
 
 class YFinanceFetcher(StockFetcher):
     def fetch(self, tickers: dict[str, str]) -> list[StockSnapshot]:
-        raise NotImplementedError 
+        raise NotImplementedError  # Adapter 단계에서 구현
