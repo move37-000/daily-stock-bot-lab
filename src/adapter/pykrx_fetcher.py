@@ -1,0 +1,7 @@
+from src.domain.stock import StockSnapshot
+from src.port.stock_fetcher import StockFetcher
+
+
+class PykrxFetcher(StockFetcher):
+    def fetch(self, tickers: dict[str, str]) -> list[StockSnapshot]:
+        raise NotImplementedError  # Adapter 단계에서 구현
