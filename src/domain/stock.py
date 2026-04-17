@@ -39,7 +39,7 @@ class StockSnapshot:
     @property
     def is_up(self) -> bool:
         """상승 여부 (0 포함)"""
-        return self.change >= 0 
+        return self.change >= 0
 
     @property
     def formatted_change_pct(self) -> str:
