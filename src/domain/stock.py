@@ -35,3 +35,23 @@ class StockSnapshot:
     change_pct: float
     history: list[DailyPrice] = field(default_factory=list)
     news: list[NewsItem] = field(default_factory=list)
+
+    @property
+    def is_up(self) -> bool:
+        """상승 여부 (0 포함)"""
+        return self.change >= 0
+
+    @property
+    def formatted_change_pct(self) -> str:
+        """부호 포함 변동률 (예: '+1.73', '-0.45')"""
+        return f"{self.change_pct:+.2f}"
+
+    @property
+    def emoji(self) -> str:
+        return "🟢" if self.is_up else "🔴"
+
+    @property
+    def formatted_price(self) -> str:
+        if self.market == Market.KR:
+            return f"{int(self.close):,}"
+        return f"{self.close:,.2f}"

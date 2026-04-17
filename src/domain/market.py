@@ -53,12 +53,15 @@ class ExchangeRate:
 
     @property
     def is_up(self) -> bool:
+        """상승 여부 (0 포함)"""
         return self.change >= 0
 
     @property
     def formatted_price(self) -> str:
+        """천단위 콤마 + 소수점 2자리 (예: '5,234.56')"""
         return f"{self.price:,.2f}"
 
     @property
     def formatted_change_pct(self) -> str:
+        """부호 포함 변동률 (예: '+1.73', '-0.45')"""
         return f"{self.change_pct:+.2f}"
