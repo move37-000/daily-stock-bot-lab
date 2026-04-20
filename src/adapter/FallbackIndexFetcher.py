@@ -1,4 +1,4 @@
-class FallbackIndexFetcher:
+class FallbackIndexFetcher(IndexFetcher):
     def __init__(self, fetchers: list[IndexFetcher]):
         self._fetchers = fetchers
 
