@@ -1,7 +1,10 @@
+# src/domain/report.py
 from dataclasses import dataclass
 from datetime import date
+
+from src.domain.market import ExchangeRate, MarketOverview
 from src.domain.stock import StockSnapshot
-from src.domain.market import MarketOverview, ExchangeRate
+
 
 @dataclass(frozen=True)
 class DailyReport:
@@ -17,8 +20,16 @@ class DailyReport:
         return sum(1 for s in self.us_stocks if s.is_up)
 
     @property
+    def us_down_count(self) -> int:
+        return len(self.us_stocks) - self.us_up_count
+
+    @property
     def kr_up_count(self) -> int:
         return sum(1 for s in self.kr_stocks if s.is_up)
+
+    @property
+    def kr_down_count(self) -> int:
+        return len(self.kr_stocks) - self.kr_up_count
 
     @property
     def top_gainer(self) -> StockSnapshot:
