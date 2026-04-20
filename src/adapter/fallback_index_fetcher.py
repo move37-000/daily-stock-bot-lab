@@ -1,3 +1,7 @@
+from src.domain.market import IndexSnapshot
+from src.port.index_fetcher import IndexFetcher
+
+
 class FallbackIndexFetcher(IndexFetcher):
     def __init__(self, fetchers: list[IndexFetcher]):
         self._fetchers = fetchers
