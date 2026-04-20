@@ -1,0 +1,3 @@
+class ExchangeRateFetcher(Protocol):
+    def fetch(self) -> ExchangeRate:
+        ...
