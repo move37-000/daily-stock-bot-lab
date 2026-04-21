@@ -93,7 +93,7 @@ class YFinanceFetcher(StockFetcher):
             return [
                 NewsItem(
                     title=item.get("content", {}).get("title", ""),
-                    link=self._extract_news_link(item.get("content", {})),
+                    link=self._extract_news_link(item.get("content", {})), 
                     publisher=(
                         item.get("content", {})
                         .get("provider", {})
