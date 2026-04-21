@@ -1,4 +1,3 @@
-# src/domain/report.py
 from dataclasses import dataclass
 from datetime import date
 
@@ -8,6 +7,11 @@ from src.domain.stock import StockSnapshot
 
 @dataclass(frozen=True)
 class DailyReport:
+    """일일 주식 리포트 (알림·AI 분석·HTML 리포트 공통 입력)
+
+    집계값(상승/하락 카운트, top gainer/loser 등)은 property로 계산한다.
+    어댑터마다 집계 로직을 중복 구현하지 않도록 도메인이 제공한다.
+    """
     date: date
     us_stocks: list[StockSnapshot]
     kr_stocks: list[StockSnapshot]
