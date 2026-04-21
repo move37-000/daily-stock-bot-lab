@@ -85,7 +85,7 @@ class YFinanceFetcher(StockFetcher):
         close = float(latest["Close"])
         prev_close = float(prev["Close"])
         change = close - prev_close
-        change_pct = (change / prev_close) * 100 
+        change_pct = (change / prev_close) * 100
         return close, change, change_pct
 
     def _fetch_news(self, ticker: yf.Ticker, symbol: str) -> list[NewsItem]:
