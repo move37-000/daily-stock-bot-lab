@@ -106,7 +106,7 @@ class YFinanceFetcher(StockFetcher):
                 for item in ticker.news[: self._news_limit]
             ]
         except Exception as e:
-            logger.warning(f"뉴스 조회 실패 ({symbol}): {e}") 
+            logger.warning(f"뉴스 조회 실패 ({symbol}): {e}")
             return []
 
     @staticmethod
