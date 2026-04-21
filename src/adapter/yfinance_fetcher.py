@@ -1,12 +1,12 @@
 import logging
-from typing import Any
 
+import pandas as pd
 import yfinance as yf
 
+from src.common.date_utils import format_us_news_time
 from src.domain.news import NewsItem
 from src.domain.stock import DailyPrice, Market, StockSnapshot
 from src.port.stock_fetcher import StockFetcher
-from src.common.date_utils import format_us_news_time
 
 logger = logging.getLogger(__name__)
 
@@ -65,7 +65,7 @@ class YFinanceFetcher(StockFetcher):
         )
 
     @staticmethod
-    def _parse_history(history: Any) -> list[DailyPrice]:
+    def _parse_history(history: pd.DataFrame) -> list[DailyPrice]:
         return [
             DailyPrice(
                 date=date.strftime("%Y-%m-%d"),
@@ -79,7 +79,7 @@ class YFinanceFetcher(StockFetcher):
         ]
 
     @staticmethod
-    def _calculate_change(history: Any) -> tuple[float, float, float]:
+    def _calculate_change(history: pd.DataFrame) -> tuple[float, float, float]:
         latest = history.iloc[-1]
         prev = history.iloc[-2]
         close = float(latest["Close"])
