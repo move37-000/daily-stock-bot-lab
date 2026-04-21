@@ -97,7 +97,7 @@ class YFinanceFetcher(StockFetcher):
                     publisher=(
                         item.get("content", {})
                         .get("provider", {})
-                        .get("displayName", "") 
+                        .get("displayName", "")
                     ),
                     time=format_us_news_time(
                         item.get("content", {}).get("pubDate", "")
