@@ -3,6 +3,7 @@ import logging
 import pandas as pd
 import yfinance as yf
 
+from src.adapter._yfinance_common import calculate_change
 from src.domain.market import IndexSnapshot
 from src.domain.stock import DailyPrice
 from src.port.index_fetcher import IndexFetcher
@@ -35,7 +36,7 @@ class YFinanceIndexFetcher(IndexFetcher):
             )
 
         history = history.tail(self._history_days)
-        close, change, change_pct = self._calculate_change(history)
+        close, change, change_pct = calculate_change(history)
         daily_prices = self._parse_history(history)
 
         return IndexSnapshot(
@@ -45,16 +46,6 @@ class YFinanceIndexFetcher(IndexFetcher):
             change_pct=change_pct,
             history=daily_prices,
         )
-
-    @staticmethod
-    def _calculate_change(history: pd.DataFrame) -> tuple[float, float, float]:
-        latest = history.iloc[-1]
-        prev = history.iloc[-2]
-        close = float(latest["Close"])
-        prev_close = float(prev["Close"])
-        change = close - prev_close
-        change_pct = (change / prev_close) * 100
-        return close, change, change_pct
 
     @staticmethod
     def _parse_history(history: pd.DataFrame) -> list[DailyPrice]:
