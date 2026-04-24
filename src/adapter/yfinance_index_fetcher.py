@@ -45,3 +45,34 @@ class YFinanceIndexFetcher(IndexFetcher):
             change_pct=change_pct,
             history=daily_prices,
         )
+
+    @staticmethod
+    def _calculate_change(history: pd.DataFrame) -> tuple[float, float, float]:
+        latest = history.iloc[-1]
+        prev = history.iloc[-2]
+        close = float(latest["Close"])
+        prev_close = float(prev["Close"])
+        change = close - prev_close
+        change_pct = (change / prev_close) * 100
+        return close, change, change_pct
+
+    @staticmethod
+    def _parse_history(history: pd.DataFrame) -> list[DailyPrice]:
+        """스파크라인용 일별 가격. 지수는 OHLCV 중 종가만 의미가 있어
+        DailyPrice의 나머지 필드(open/high/low/volume)도 close로 동일하게 채운다.
+
+        DailyPrice를 재사용하는 이유는 StockSnapshot.history와 타입 통일을 위해서.
+        대안으로 IndexDaily 같은 별도 DTO를 둘 수 있으나 YAGNI. 스파크라인만
+        그리는 현 용도에서는 DailyPrice로 충분.
+        """
+        return [
+            DailyPrice(
+                date=date.strftime("%Y-%m-%d"),
+                open=float(row["Close"]),
+                high=float(row["Close"]),
+                low=float(row["Close"]),
+                close=float(row["Close"]),
+                volume=0,
+            )
+            for date, row in history.iterrows()
+        ]
