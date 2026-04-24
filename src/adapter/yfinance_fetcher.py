@@ -3,8 +3,7 @@ import logging
 import pandas as pd
 import yfinance as yf
 
-from src.adapter._yfinance_common import calculate_change
-from src.common.date_utils import format_us_news_time
+from src.adapter._yfinance_common import calculate_change, parse_yfinance_news
 from src.domain.news import NewsItem
 from src.domain.stock import DailyPrice, Market, StockSnapshot
 from src.port.stock_fetcher import StockFetcher
@@ -52,7 +51,7 @@ class YFinanceFetcher(StockFetcher):
 
         daily_prices = self._parse_history(history)
         close, change, change_pct = calculate_change(history)
-        news = self._fetch_news(ticker, symbol)
+        news = self._fetch_news_safely(ticker, symbol)
 
         return StockSnapshot(
             symbol=symbol,
@@ -79,31 +78,15 @@ class YFinanceFetcher(StockFetcher):
             for date, row in history.iterrows()
         ]
 
-    def _fetch_news(self, ticker: yf.Ticker, symbol: str) -> list[NewsItem]:
+    def _fetch_news_safely(self, ticker: yf.Ticker, symbol: str) -> list[NewsItem]:
+        """뉴스 실패 격리 — StockFetcher Port 규약에 따라 news=[]로 복귀.
+
+        파싱 로직은 _yfinance_common.parse_yfinance_news에 위임. 이 메서드는
+        실패 격리 책임만 담당한다. 분리 이유: 격리 정책이 Port마다 다르기
+        때문(StockFetcher는 종목 단위 격리, MarketNewsFetcher는 리포트 단위 격리).
+        """
         try:
-            return [
-                NewsItem(
-                    title=item.get("content", {}).get("title", ""),
-                    link=self._extract_news_link(item.get("content", {})),
-                    publisher=(
-                        item.get("content", {})
-                        .get("provider", {})
-                        .get("displayName", "")
-                    ),
-                    time=format_us_news_time(
-                        item.get("content", {}).get("pubDate", "")
-                    ),
-                )
-                for item in ticker.news[: self._news_limit]
-            ]
+            return parse_yfinance_news(ticker, self._news_limit)
         except Exception as e:
             logger.warning(f"뉴스 조회 실패 ({symbol}): {e}")
             return []
-
-    @staticmethod
-    def _extract_news_link(content: dict) -> str:
-        """yfinance 뉴스 응답에서 링크 추출. clickThroughUrl 우선, canonicalUrl 폴백."""
-        return (
-            content.get("clickThroughUrl", {}).get("url", "")
-            or content.get("canonicalUrl", {}).get("url", "")
-        )
