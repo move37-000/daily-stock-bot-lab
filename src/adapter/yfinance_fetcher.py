@@ -3,6 +3,7 @@ import logging
 import pandas as pd
 import yfinance as yf
 
+from src.adapter._yfinance_common import calculate_change
 from src.common.date_utils import format_us_news_time
 from src.domain.news import NewsItem
 from src.domain.stock import DailyPrice, Market, StockSnapshot
@@ -50,7 +51,7 @@ class YFinanceFetcher(StockFetcher):
             return None
 
         daily_prices = self._parse_history(history)
-        close, change, change_pct = self._calculate_change(history)
+        close, change, change_pct = calculate_change(history)
         news = self._fetch_news(ticker, symbol)
 
         return StockSnapshot(
@@ -77,16 +78,6 @@ class YFinanceFetcher(StockFetcher):
             )
             for date, row in history.iterrows()
         ]
-
-    @staticmethod
-    def _calculate_change(history: pd.DataFrame) -> tuple[float, float, float]:
-        latest = history.iloc[-1]
-        prev = history.iloc[-2]
-        close = float(latest["Close"])
-        prev_close = float(prev["Close"])
-        change = close - prev_close
-        change_pct = (change / prev_close) * 100
-        return close, change, change_pct
 
     def _fetch_news(self, ticker: yf.Ticker, symbol: str) -> list[NewsItem]:
         try:
