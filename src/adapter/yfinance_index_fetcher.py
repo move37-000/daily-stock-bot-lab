@@ -18,3 +18,30 @@ class YFinanceIndexFetcher(IndexFetcher):
     데이터 부족(히스토리 2일 미만) 또는 조회 실패 시 RuntimeError를 던진다.
     실패를 기본값으로 위장하지 않는다 (§6.16 실패는 예외 원칙).
     """
+
+    _BUFFER_DAYS = 2  # 주말/공휴일로 인한 거래일 부족 커버용 버퍼
+
+    def __init__(self, history_days: int = 5) -> None:
+        self._history_days = history_days
+
+    def fetch(self, symbol: str, name: str) -> IndexSnapshot:
+        ticker = yf.Ticker(symbol)
+        period = f"{self._history_days + self._BUFFER_DAYS}d"
+        history = ticker.history(period=period)
+
+        if len(history) < 2:
+            raise RuntimeError(
+                f"{name} ({symbol}) 지수 데이터 부족: {len(history)}일치"
+            )
+
+        history = history.tail(self._history_days)
+        close, change, change_pct = self._calculate_change(history)
+        daily_prices = self._parse_history(history)
+
+        return IndexSnapshot(
+            name=name,
+            price=close,
+            change=change,
+            change_pct=change_pct,
+            history=daily_prices,
+        )
