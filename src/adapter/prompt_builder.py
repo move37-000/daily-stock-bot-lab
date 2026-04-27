@@ -39,3 +39,8 @@ def build_prompt(report: DailyReport) -> str:
                 6. 투자 권유가 아닌 정보 제공 목적
                 
                 브리핑을 작성해줘."""
+
+
+def _format_index(index: IndexSnapshot) -> str:
+    """지수 한 줄 포맷. '5,234.12 (+1.24%)' 형식."""
+    return f"{index.formatted_price} ({index.formatted_change_pct}%)"
