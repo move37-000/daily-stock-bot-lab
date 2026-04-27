@@ -32,3 +32,23 @@ class GeminiAnalyzer(MarketAnalyzer):
             raise ValueError("models 리스트가 존재하지 않음.")
         self._api_key = api_key
         self._models = models
+
+    def analyze(self, report: DailyReport) -> str:
+        client = genai.Client(api_key=self._api_key)
+        prompt = build_prompt(report)
+        errors: list[tuple[str, Exception]] = []
+
+        for model in self._models:
+            try:
+                logger.info(f"Gemini 모델 시도: {model}")
+                response = client.models.generate_content(
+                    model=model,
+                    contents=prompt,
+                )
+                logger.info(f"Gemini 분석 성공: {model}")
+                return response.text.strip()
+            except Exception as e:
+                errors.append((model, e))
+                logger.warning(f"{model} 실패: {e}")
+
+        raise RuntimeError(f"모든 Gemini 모델 실패: {errors}")
