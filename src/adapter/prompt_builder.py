@@ -44,3 +44,8 @@ def build_prompt(report: DailyReport) -> str:
 def _format_index(index: IndexSnapshot) -> str:
     """지수 한 줄 포맷. '5,234.12 (+1.24%)' 형식."""
     return f"{index.formatted_price} ({index.formatted_change_pct}%)"
+
+def _format_exchange(rate: ExchangeRate) -> str:
+    """환율 한 줄 포맷. '1,345.50 (+0.12%)' 형식."""
+    return f"{rate.formatted_price} ({rate.formatted_change_pct}%)"
+
