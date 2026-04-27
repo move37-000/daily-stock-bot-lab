@@ -49,3 +49,16 @@ def _format_exchange(rate: ExchangeRate) -> str:
     """환율 한 줄 포맷. '1,345.50 (+0.12%)' 형식."""
     return f"{rate.formatted_price} ({rate.formatted_change_pct}%)"
 
+
+def _format_stock_summary(
+    stocks: list[StockSnapshot], top_n: int = 3
+) -> str:
+    """종목 요약 포맷. config 순서대로 앞 top_n개를 'NVDA +5.23%, QQQ +1.45%' 형식으로.
+
+    정렬 안 함. config의 종목 순서가 사용자 관심 순서라는 원본 가정을 계승.
+    변동률 정렬로 바꾸려면 sorted(stocks, key=lambda s: abs(s.change_pct), reverse=True).
+    """
+    return ", ".join(
+        f"{s.symbol} {s.change_pct:+.2f}%"
+        for s in stocks[:top_n]
+    )
