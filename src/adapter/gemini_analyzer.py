@@ -24,3 +24,11 @@ class GeminiAnalyzer(MarketAnalyzer):
     RuntimeError. 호출측 (main.py)이 try/except로 처리하여 AI 분석
     실패가 리포트 본체 송출을 막지 않게 한다.
     """
+
+    def __init__(self, api_key: str, models: list[str]) -> None:
+        if not api_key:
+            raise ValueError("GEMINI_API_KEY가 존재하지 않음.")
+        if not models:
+            raise ValueError("models 리스트가 존재하지 않음.")
+        self._api_key = api_key
+        self._models = models
