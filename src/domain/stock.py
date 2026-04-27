@@ -11,7 +11,7 @@ class Market(Enum):
 
 
 @dataclass(frozen=True)
-class DailyPrice:
+class StockDaily:
     """하루치 OHLCV 시세 데이터"""
     date: str
     open: float
@@ -33,7 +33,7 @@ class StockSnapshot:
     close: float
     change: float
     change_pct: float
-    history: list[DailyPrice] = field(default_factory=list)
+    history: list[StockDaily] = field(default_factory=list)
     news: list[NewsItem] = field(default_factory=list)
 
     @property

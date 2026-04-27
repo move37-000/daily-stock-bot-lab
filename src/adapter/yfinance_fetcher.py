@@ -5,7 +5,7 @@ import yfinance as yf
 
 from src.adapter._yfinance_common import calculate_change, parse_yfinance_news
 from src.domain.news import NewsItem
-from src.domain.stock import DailyPrice, Market, StockSnapshot
+from src.domain.stock import StockDaily, Market, StockSnapshot
 from src.port.stock_fetcher import StockFetcher
 
 logger = logging.getLogger(__name__)
@@ -49,7 +49,7 @@ class YFinanceFetcher(StockFetcher):
             logger.warning(f"미국 주식 데이터 없음: {symbol}")
             return None
 
-        daily_prices = self._parse_history(history)
+        stock_daily = self._parse_history(history)
         close, change, change_pct = calculate_change(history)
         news = self._fetch_news_safely(ticker, symbol)
 
@@ -60,14 +60,14 @@ class YFinanceFetcher(StockFetcher):
             close=close,
             change=change,
             change_pct=change_pct,
-            history=daily_prices,
+            history=stock_daily,
             news=news,
         )
 
     @staticmethod
-    def _parse_history(history: pd.DataFrame) -> list[DailyPrice]:
+    def _parse_history(history: pd.DataFrame) -> list[StockDaily]:
         return [
-            DailyPrice(
+            StockDaily(
                 date=date.strftime("%Y-%m-%d"),
                 open=float(row["Open"]),
                 high=float(row["High"]),

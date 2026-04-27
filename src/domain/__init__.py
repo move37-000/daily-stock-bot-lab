@@ -1,11 +1,11 @@
 from src.domain.news import NewsItem
-from src.domain.stock import Market, DailyPrice, StockSnapshot
+from src.domain.stock import Market, StockDaily, StockSnapshot
 from src.domain.market import IndexSnapshot, MarketOverview, ExchangeRate
 
 __all__ = [
     # Stock
     "Market",
-    "DailyPrice",
+    "StockDaily",
     "StockSnapshot",
     # Market
     "IndexSnapshot",
