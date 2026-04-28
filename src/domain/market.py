@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from src.domain.stock import StockDaily, Market
+from src.domain.stock import StockDaily, PricePoint, Market
 
 
 @dataclass(frozen=True)
@@ -29,7 +29,7 @@ class IndexSnapshot:
     price: float
     change: float
     change_pct: float
-    history: list[StockDaily] = field(default_factory=list)
+    history: list[PricePoint] = field(default_factory=list)
 
     @property
     def is_up(self) -> bool:
