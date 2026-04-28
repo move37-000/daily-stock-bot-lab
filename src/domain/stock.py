@@ -33,7 +33,7 @@ class StockSnapshot:
     close: float
     change: float
     change_pct: float
-    history: list[PricePoint] = field(default_factory=list)
+    history: list[StockDaily] = field(default_factory=list)
     news: list[NewsItem] = field(default_factory=list)
 
     @property

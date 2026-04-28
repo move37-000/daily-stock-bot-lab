@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from src.domain.stock import PricePoint, Market
+from src.domain.stock import Market
 
 
 @dataclass(frozen=True)
