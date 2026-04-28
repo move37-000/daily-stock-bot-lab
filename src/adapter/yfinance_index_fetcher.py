@@ -48,13 +48,6 @@ class YFinanceIndexFetcher(IndexFetcher):
 
     @staticmethod
     def _parse_history(history: pd.DataFrame) -> list[PricePoint]:
-        """스파크라인용 일별 가격. 지수는 OHLCV 중 종가만 의미가 있어
-        PricePoint의 나머지 필드(open/high/low/volume)도 close로 동일하게 채운다.
-
-        PricePoint를 재사용하는 이유는 StockSnapshot.history와 타입 통일을 위해서.
-        대안으로 IndexDaily 같은 별도 DTO를 둘 수 있으나 YAGNI. 스파크라인만
-        그리는 현 용도에서는 PricePoint로 충분.
-        """
         return [
             PricePoint(
                 date=date.strftime("%Y-%m-%d"),
