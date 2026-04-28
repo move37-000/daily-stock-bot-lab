@@ -36,14 +36,14 @@ class YFinanceIndexFetcher(IndexFetcher):
 
         history = history.tail(self._history_days)
         close, change, change_pct = calculate_change(history)
-        stock_daily = self._parse_history(history)
+        price_points = self._parse_history(history)
 
         return IndexSnapshot(
             name=name,
             price=close,
             change=change,
             change_pct=change_pct,
-            history=stock_daily,
+            history=price_points,
         )
 
     @staticmethod
@@ -51,11 +51,7 @@ class YFinanceIndexFetcher(IndexFetcher):
         return [
             PricePoint(
                 date=date.strftime("%Y-%m-%d"),
-                open=float(row["Close"]),
-                high=float(row["Close"]),
-                low=float(row["Close"]),
-                close=float(row["Close"]),
-                volume=0,
+                price=float(row["Close"])
             )
             for date, row in history.iterrows()
         ]
