@@ -1,20 +1,10 @@
 from dataclasses import dataclass, field
 
-from src.domain.stock import StockDaily, PricePoint, Market
+from src.domain.stock import PricePoint, Market
 
 
 @dataclass(frozen=True)
 class PricePoint:
-    """가격 시계열 점 (지수·환율 스파크라인용).
-
-    종목과 달리 OHLCV 중 종가만 의미가 있는 데이터에 사용한다. 종목용
-    OHLCV 타입은 StockDaily.
-
-    Phase 2 보정으로 신설. Phase 1 도메인 설계는 DailyPrice(OHLCV) 하나로
-    종목/지수/환율을 모두 표현하려 했으나, 지수/환율 어댑터에서 억지 채우기
-    어색함이 드러났다 (DailyPrice(open=close, high=close, low=close,
-    close=close, volume=0)).
-    """
     date: str
     price: float
 
