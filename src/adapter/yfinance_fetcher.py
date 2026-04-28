@@ -65,7 +65,7 @@ class YFinanceFetcher(StockFetcher):
         )
 
     @staticmethod
-    def _parse_history(history: pd.DataFrame) -> list[StockDaily]:
+    def _parse_history(history: pd.DataFrame) -> list[PricePoint]:
         return [
             StockDaily(
                 date=date.strftime("%Y-%m-%d"),
