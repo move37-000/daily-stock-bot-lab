@@ -28,3 +28,10 @@ from src.domain.report import DailyReport
 from src.domain.stock import Market
 from src.port.market_analyzer import MarketAnalyzer
 from src.port.notifier import Notifier
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+logger = logging.getLogger(__name__)
