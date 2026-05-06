@@ -56,3 +56,16 @@ GEMINI_MODELS = [
     "gemini-2.5-flash",
     "gemini-2.5-flash-lite",
 ]
+
+# =============================================================================
+# HTML 리포트용 (별도 작업에서 사용)
+# =============================================================================
+US_STOCK_DOMAINS: dict[str, str] = {
+    "NVDA": "nvidia.com",
+    "QQQ": "invesco.com",
+    "SCHD": "schwab.com",
+}
+
+LOGO_API_TOKEN = "pk_X-1ZO13GSgeOoUrIuJ6GMQ"
+LOGO_API_URL = "https://img.logo.dev/{domain}?token={token}&size=40&format=png"
+TOSS_LOGO_URL = "https://thumb.tossinvest.com/image/resized/40x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-{code}.png"
