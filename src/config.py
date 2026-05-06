@@ -40,3 +40,8 @@ US_INDICES: dict[str, str] = {
     "^GSPC": "S&P 500",
     "^IXIC": "NASDAQ",
 }
+
+USD_KRW_SYMBOL = "USDKRW=X"
+USD_KRW_PAIR = "USD/KRW"
+
+US_MARKET_NEWS_SYMBOL = "^GSPC"  # S&P 500에 딸린 yfinance 뉴스 사용
