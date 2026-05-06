@@ -45,3 +45,14 @@ USD_KRW_SYMBOL = "USDKRW=X"
 USD_KRW_PAIR = "USD/KRW"
 
 US_MARKET_NEWS_SYMBOL = "^GSPC"  # S&P 500에 딸린 yfinance 뉴스 사용
+
+# =============================================================================
+# AI 설정
+# =============================================================================
+GEMINI_MODELS = [
+    "gemini-3.1-flash-lite-preview",
+    "gemini-3-flash-preview",
+    "gemini-2.5-pro",
+    "gemini-2.5-flash",
+    "gemini-2.5-flash-lite",
+]
