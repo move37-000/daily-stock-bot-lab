@@ -40,7 +40,7 @@ logger = logging.getLogger(__name__)
 def main() -> None:
     # ========================================================================
     # 1. 어댑터 인스턴스 생성 (DI 조립)
-    # =======================================================================
+    # ========================================================================
     stock_fetcher = YFinanceFetcher(news_limit=NEWS_LIMIT)
     index_fetcher = YFinanceIndexFetcher()
     exchange_fetcher = YFinanceExchangeRateFetcher(
