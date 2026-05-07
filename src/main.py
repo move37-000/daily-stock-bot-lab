@@ -51,3 +51,9 @@ def main() -> None:
         symbol=US_MARKET_NEWS_SYMBOL,
         news_limit=NEWS_LIMIT,
     )
+
+    slack_notifier: Notifier | None = None
+    if SLACK_WEBHOOK_URL:
+        slack_notifier = SlackNotifier(webhook_url=SLACK_WEBHOOK_URL)
+    else:
+        logger.warning("SLACK_WEBHOOK_URL 누락. Slack 알림 건너뜀.")
