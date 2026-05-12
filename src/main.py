@@ -122,3 +122,15 @@ def main() -> None:
         exchange_rate=exchange_rate,
         us_news=us_news,
     )
+
+    # =========================================================================
+    # 5. AI 분석 (옵셔널, 실패해도 진행)
+    # =========================================================================
+    if analyzer is not None:
+        logger.info("AI 분석 중...")
+        try:
+            analysis = analyzer.analyze(report)
+            report = replace(report, analysis=analysis)
+            logger.info("AI 분석 성공")
+        except Exception as e:
+            logger.error(f"AI 분석 실패: {e}", exc_info=True)
