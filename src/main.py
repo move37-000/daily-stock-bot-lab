@@ -134,3 +134,26 @@ def main() -> None:
             logger.info("AI 분석 성공")
         except Exception as e:
             logger.error(f"AI 분석 실패: {e}", exc_info=True)
+
+    # =========================================================================
+    # 6. 알림 전송
+    # =========================================================================
+    failed_notifiers: list[str] = []
+
+    if slack_notifier is not None:
+        logger.info("Slack 전송 중...")
+        try:
+            slack_notifier.send(report, REPORT_URL)
+            logger.info("Slack 전송 성공")
+        except Exception as e:
+            logger.error(f"Slack 전송 실패: {e}", exc_info=True)
+            failed_notifiers.append("Slack")
+
+    if discord_notifier is not None:
+        logger.info("Discord 전송 중...")
+        try:
+            discord_notifier.send(report, REPORT_URL)
+            logger.info("Discord 전송 성공")
+        except Exception as e:
+            logger.error(f"Discord 전송 실패: {e}", exc_info=True)
+            failed_notifiers.append("Discord")
