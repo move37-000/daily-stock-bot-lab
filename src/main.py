@@ -94,3 +94,10 @@ def main() -> None:
     except Exception as e:
         logger.error(f"미국 지수 수집 실패: {e}", exc_info=True)
         sys.exit(1)
+
+    logger.info("환율 수집 중...")
+    try:
+        exchange_rate = exchange_fetcher.fetch()
+    except Exception as e:
+        logger.error(f"환율 수집 실패: {e}", exc_info=True)
+        sys.exit(1)
