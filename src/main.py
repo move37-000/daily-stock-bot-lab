@@ -157,3 +157,23 @@ def main() -> None:
         except Exception as e:
             logger.error(f"Discord 전송 실패: {e}", exc_info=True)
             failed_notifiers.append("Discord")
+
+    # =========================================================================
+    # 7. exit code 결정
+    # =========================================================================
+    total_notifiers = sum(
+        n is not None for n in (slack_notifier, discord_notifier)
+    )
+    success_count = total_notifiers - len(failed_notifiers)
+
+    if total_notifiers > 0 and success_count == 0:
+        logger.error(f"모든 알림 실패: {failed_notifiers}")
+        sys.exit(1)
+
+    if failed_notifiers:
+        logger.warning(f"일부 알림 실패: {failed_notifiers} (다른 채널은 성공)")
+
+    logger.info("일일 리포트 완료")
+
+if __name__ == "__main__":
+    main()
