@@ -107,3 +107,18 @@ def main() -> None:
     # =========================================================================
     logger.info("미국 시장 뉴스 수집 중...")
     us_news = news_fetcher.fetch()
+
+    # =========================================================================
+    # 4. DailyReport 조립
+    # =========================================================================
+    report = DailyReport(
+        date=date.today(),
+        us_stocks=us_stocks,
+        us_market=MarketOverview(
+            market=Market.US,
+            primary=sp500,
+            secondary=nasdaq,
+        ),
+        exchange_rate=exchange_rate,
+        us_news=us_news,
+    )
