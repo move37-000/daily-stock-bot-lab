@@ -57,3 +57,13 @@ def main() -> None:
         slack_notifier = SlackNotifier(webhook_url=SLACK_WEBHOOK_URL)
     else:
         logger.warning("SLACK_WEBHOOK_URL 누락. Slack 알림 건너뜀.")
+
+    discord_notifier: Notifier | None = None
+    if DISCORD_WEBHOOK_URL:
+        discord_notifier = DiscordNotifier(webhook_url=DISCORD_WEBHOOK_URL)
+    else:
+        logger.warning("DISCORD_WEBHOOK_URL 누락. Discord 알림 건너뜀.")
+
+    if slack_notifier is None and discord_notifier is None:
+        logger.error("Slack/Discord 모두 비활성. 알림 보낼 곳 없음.")
+        sys.exit(1)
