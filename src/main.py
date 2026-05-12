@@ -73,3 +73,13 @@ def main() -> None:
         analyzer = GeminiAnalyzer(api_key=GEMINI_API_KEY, models=GEMINI_MODELS)
     else:
         logger.warning("GEMINI_API_KEY 누락. AI 분석 건너뜀.")
+
+    # =========================================================================
+    # 2. 필수 데이터 수집 (실패 시 즉시 종료)
+    # =========================================================================
+    logger.info("미국 종목 수집 중...")
+    try:
+        us_stocks = stock_fetcher.fetch(US_TICKERS)
+    except Exception as e:
+        logger.error(f"미국 종목 수집 실패: {e}", exc_info=True)
+        sys.exit(1)
