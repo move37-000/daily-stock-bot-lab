@@ -83,3 +83,14 @@ def main() -> None:
     except Exception as e:
         logger.error(f"미국 종목 수집 실패: {e}", exc_info=True)
         sys.exit(1)
+
+    logger.info("미국 지수 수집 중...")
+    try:
+        index_items = list(US_INDICES.items())
+        primary_symbol, primary_name = index_items[0]
+        secondary_symbol, secondary_name = index_items[1]
+        sp500 = index_fetcher.fetch(primary_symbol, primary_name)
+        nasdaq = index_fetcher.fetch(secondary_symbol, secondary_name)
+    except Exception as e:
+        logger.error(f"미국 지수 수집 실패: {e}", exc_info=True)
+        sys.exit(1)
