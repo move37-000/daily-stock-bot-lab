@@ -34,3 +34,42 @@ def _is_retryable(exc: Exception) -> bool:
     if isinstance(exc, ApiResponseError):
         return exc.status_code == 429 or exc.status_code >= 500
     return False
+
+
+def retry(
+    max_attempts: int = 3,
+    delay: float = 2.0,
+) -> Callable[[Callable[..., T]], Callable[..., T]]:
+    """재시도 데코레이터.
+
+    Args:
+        max_attempts: 총 시도 횟수. 3이면 최초 1회 + 재시도 2회.
+            1이면 재시도 없음(= 데코레이터를 안 단 것과 동작 동일)
+        delay: 재시도 사이 고정 대기(초).
+
+    재시도 가능한 예외(_is_retryable)만 재시도한다. 재시도 불가 예외는
+    즉시 전파한다. 모든 시도가 실패하면 마지막 예외를 그대로 전파한다.
+    """
+
+    def decorator(func: Callable[..., T]) -> Callable[..., T]:
+        @functools.wraps(func)
+        def wrapper(*args: object, **kwargs: object) -> T:
+            for attempt in range(1, max_attempts + 1):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    is_last = attempt == max_attempts
+                    if is_last or not _is_retryable(e):
+                        raise
+                    logger.warning(
+                        f"{func.__name__} 실패 "
+                        f"(시도 {attempt}/{max_attempts}): {e} "
+                        f"— {delay}초 후 재시도"
+                    )
+                    time.sleep(delay)
+            # 도달 불가: 루프는 return 또는 raise로만 빠져나간다.
+            raise AssertionError("retry 루프 불변식 위반")
+
+        return wrapper
+
+    return decorator
