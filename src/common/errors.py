@@ -35,3 +35,13 @@ class ApiResponseError(AdapterError):
     NetworkError/ParseError와 달리 이 예외만 생성자가 다르다.
     "응답이 왔다"는 사실 자체가 status/body 데이터를 동반하기 때문이다.
     """
+
+    def __init__(
+            self,
+            message: str,
+            status_code: int,
+            response_body: str = "",
+    ) -> None:
+        super().__init__(message)
+        self.status_code = status_code
+        self.response_body = response_body[:500]
