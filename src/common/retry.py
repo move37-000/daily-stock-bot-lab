@@ -19,3 +19,18 @@ from src.common.errors import ApiResponseError, NetworkError
 logger = logging.getLogger(__name__)
 
 T = TypeVar("T")
+
+
+def _is_retryable(exc: Exception) -> bool:
+    """재시도해서 풀릴 가능성이 있는 실패인지 판정한다.
+
+    - NetworkError: 연결 끊김 / 타임아웃 — 다음 시도엔 풀릴 수 있다.
+    - ApiResponseError 5xx: 서버 일시 장애
+    - ApiResponseError 429: 4xx지만 Rate Limit — 잠시 후 풀린다.
+    - ParseError·그 외 4xx / 알 수 없는 예외: 재시도 무의미.
+    """
+    if isinstance(exc, NetworkError):
+        return True
+    if isinstance(exc, ApiResponseError):
+        return exc.status_code == 429 or exc.status_code >= 500
+    return False
