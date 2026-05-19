@@ -8,3 +8,14 @@ common/errors.py는 "무슨 일이 일어났는가"라는 사실만 담고,
 지수 백오프가 푸는 문제(다수 클라이언트의 thundering herd)가 존재하지 않는다.
 (빠르게 N번 시도하고 안 되면 깔끔하게 죽기)
 """
+
+import functools
+import logging
+import time
+from typing import Callable, TypeVar
+
+from src.common.errors import ApiResponseError, NetworkError
+
+logger = logging.getLogger(__name__)
+
+T = TypeVar("T")
