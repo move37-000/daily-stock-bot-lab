@@ -27,3 +27,8 @@ class NetworkError(AdapterError):
 class ParseError(AdapterError):
     """응답은 받았으나 기대한 구조가 아닌 경우
     """
+
+
+class ApiResponseError(AdapterError):
+    """API가 4xx/5xx 상태 코드로 응답한 경우
+    """
