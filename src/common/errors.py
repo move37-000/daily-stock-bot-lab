@@ -17,3 +17,12 @@ class AdapterError(Exception):
     외부 라이브러리의 raw 예외와 "의미를 부여해 던진 예외"를 구별하는 경계.
     main.py가 `except AdapterError`로 한 번에 잡을 수 있다.
     """
+
+
+class NetworkError(AdapterError):
+    """응답을 받지 못한 경우(연결 실패, 타임아웃 등)
+
+    raw 예외(requests.Timeout 등)는 `raise NetworkError(...) from e`로
+    체이닝해 __cause__에 보존한다. 추가 필드는 없다 — "응답이 오지 않았다"는
+    동반 데이터가 없는 상태다.
+    """
