@@ -31,4 +31,7 @@ class ParseError(AdapterError):
 
 class ApiResponseError(AdapterError):
     """API가 4xx/5xx 상태 코드로 응답한 경우
+
+    NetworkError/ParseError와 달리 이 예외만 생성자가 다르다.
+    "응답이 왔다"는 사실 자체가 status/body 데이터를 동반하기 때문이다.
     """
