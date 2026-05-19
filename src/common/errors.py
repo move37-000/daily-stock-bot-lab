@@ -22,3 +22,11 @@ class AdapterError(Exception):
 class NetworkError(AdapterError):
     """응답을 받지 못한 경우(연결 실패, 타임아웃 등)
     """
+
+
+class ParseError(AdapterError):
+    """응답은 받았으나 기대한 구조가 아닌 경우
+
+    yfinance 응답 스키마 변경, 데이터 행 부족(2일 미만), Gemini 응답 본문
+    None 등. 재시도해도 같은 결과이므로 retry가 재시도하지 않는다.
+    """
