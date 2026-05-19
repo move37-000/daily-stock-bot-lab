@@ -21,8 +21,4 @@ class AdapterError(Exception):
 
 class NetworkError(AdapterError):
     """응답을 받지 못한 경우(연결 실패, 타임아웃 등)
-
-    raw 예외(requests.Timeout 등)는 `raise NetworkError(...) from e`로
-    체이닝해 __cause__에 보존한다. 추가 필드는 없다 — "응답이 오지 않았다"는
-    동반 데이터가 없는 상태다.
     """
