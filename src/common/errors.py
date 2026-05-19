@@ -44,4 +44,4 @@ class ApiResponseError(AdapterError):
     ) -> None:
         super().__init__(message)
         self.status_code = status_code
-        self.response_body = response_body[:500]
+        self.response_body = response_body[:200]
