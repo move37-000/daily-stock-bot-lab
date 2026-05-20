@@ -27,6 +27,7 @@ class YFinanceFetcher(StockFetcher):
     def __init__(self, news_limit: int = 3) -> None:
         self._news_limit = news_limit
 
+    @retry(max_attempts=3, delay=2.0)
     def fetch(self, tickers: dict[str, str]) -> list[StockSnapshot]:
         results: list[StockSnapshot] = []
         errors: list[tuple[str, Exception]] = []
