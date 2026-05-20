@@ -47,6 +47,9 @@ class YFinanceFetcher(StockFetcher):
         return results
 
     def _fetch_one(self, symbol: str, name: str) -> StockSnapshot | None:
+        # try를 호출/파싱 두 블록으로 분리한 이유:
+        # 한 try로 묶으면 NetworkError(연결 실패)인지 ParseError(스키마 깨짐)인지
+        # 구별할 수 없어 @retry가 5xx 재시도와 4xx 즉시 포기를 못 가른다.
         ticker = yf.Ticker(symbol)
         history = ticker.history(period="5d")
 
