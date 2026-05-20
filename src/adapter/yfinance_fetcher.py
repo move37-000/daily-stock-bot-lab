@@ -20,7 +20,8 @@ class YFinanceFetcher(StockFetcher):
     주가(5일치 OHLCV)와 종목 뉴스를 함께 조회하여 StockSnapshot을 반환한다.
     뉴스 조회 실패는 어댑터 내부에서 격리되어 news=[]로 처리되며,
     종목 단위 조회 실패는 해당 종목만 스킵한다. 모든 종목이 실패하면
-    RuntimeError를 던진다.
+    NetworkError를 던진다.(전 종목 실패는 yfinance 연결 자체가 죽었다고 해석)
+    @retry는 이 전체 실패에만 발동한다.
     """
 
     def __init__(self, news_limit: int = 3) -> None:
