@@ -5,6 +5,8 @@ import requests
 import yfinance as yf
 
 from src.adapter._yfinance_common import calculate_change, parse_yfinance_news
+from src.common.errors import NetworkError, ParseError
+from src.common.retry import retry
 from src.domain.news import NewsItem
 from src.domain.stock import StockDaily, Market, StockSnapshot
 from src.port.stock_fetcher import StockFetcher
