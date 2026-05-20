@@ -50,15 +50,23 @@ class YFinanceFetcher(StockFetcher):
         # try를 호출/파싱 두 블록으로 분리한 이유:
         # 한 try로 묶으면 NetworkError(연결 실패)인지 ParseError(스키마 깨짐)인지
         # 구별할 수 없어 @retry가 5xx 재시도와 4xx 즉시 포기를 못 가른다.
-        ticker = yf.Ticker(symbol)
-        history = ticker.history(period="5d")
+        try:
+            ticker = yf.Ticker(symbol)
+            history = ticker.history(period="5d")
+        except requests.RequestException as e:
+            raise NetworkError(f"yfinance 연결 실패 ({symbol})") from e
 
         if history.empty:
+            # 빈 DataFrame은 yfinance의 "데이터 없음" 의미, ParseError가 아니다
             logger.warning(f"미국 주식 데이터 없음: {symbol}")
             return None
 
-        stock_daily = self._parse_history(history)
-        close, change, change_pct = calculate_change(history)
+        try:
+            stock_daily = self._parse_history(history)
+            close, change, change_pct = calculate_change(history)
+        except (KeyError, IndexError, ValueError, TypeError) as e:
+            raise ParseError(f"yfinance 응답 파싱 실패 ({symbol})") from e
+
         news = self._fetch_news_safely(ticker, symbol)
 
         return StockSnapshot(
