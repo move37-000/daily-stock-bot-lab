@@ -30,12 +30,21 @@ class SlackNotifier(Notifier):
         blocks = self._build_blocks(message, report_url)
         payload = {"text": message, "blocks": blocks}
 
-        response = requests.post(
-            self._webhook_url,
-            json=payload,
-            timeout=self._timeout,
-        )
-        response.raise_for_status()
+        try:
+            response = requests.post(
+                self._webhook_url,
+                json=payload,
+                timeout=self._timeout,
+            )
+            response.raise_for_status()
+        except requests.HTTPError as e:
+            raise ApiResponseError(
+                "Slack 알림 전송 실패",
+                status_code=e.response.status_code,
+                response_body=e.response.text,
+            ) from e
+        except requests.RequestException as e:
+            raise NetworkError("Slack 연결 실패") from e
 
     def _build_message(self, report: DailyReport) -> str:
         """Slack mrkdwn 형식 메시지 텍스트 생성."""
