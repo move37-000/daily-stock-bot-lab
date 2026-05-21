@@ -40,7 +40,10 @@ class YFinanceExchangeRateFetcher(ExchangeRateFetcher):
                 f"{self._pair} ({self._symbol}) 환율 데이터 부족: {len(history)}일치"
             )
 
-        close, change, change_pct = calculate_change(history)
+        try:
+            close, change, change_pct = calculate_change(history)
+        except (KeyError, IndexError, ValueError, TypeError) as e:
+            raise ParseError(f"yfinance 응답 파싱 실패 ({self._pair}, {self._symbol})") from e
 
         return ExchangeRate(
             pair=self._pair,
