@@ -26,6 +26,7 @@ class YFinanceIndexFetcher(IndexFetcher):
     def __init__(self, history_days: int = 5) -> None:
         self._history_days = history_days
 
+    @retry(max_attempts=3, delay=2.0)
     def fetch(self, symbol: str, name: str) -> IndexSnapshot:
         ticker = yf.Ticker(symbol)
         period = f"{self._history_days + self._BUFFER_DAYS}d"
