@@ -14,7 +14,7 @@ class YFinanceExchangeRateFetcher(ExchangeRateFetcher):
     USD/KRW 등 환율 쌍을 조회한다. ExchangeRate는 history 필드를 갖지 않으므로
     전일 대비 계산에 필요한 최소 데이터(2일치)만 요청한다.
 
-    데이터 부족 또는 조회 실패 시 RuntimeError를 던진다.
+    @retry는 NetworkError / 5xx만 흡수. 데이터 부족은 ParseError로 즉시 실패.
     """
 
     _PERIOD = "5d"  # 2일 + 주말/공휴일 버퍼
