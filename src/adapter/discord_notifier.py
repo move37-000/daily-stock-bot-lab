@@ -16,8 +16,8 @@ class DiscordNotifier(Notifier):
     (**bold**, 백틱 코드), 리포트 링크 표현(마크다운 링크),
     페이로드 구조(embeds)가 다르다.
 
-    실패 시 예외를 전파한다 (requests.HTTPError 등). 호출측이 재시도·
-    스킵·중단 정책을 결정한다 (Notifier Port 규약).
+    실패 시 NetworkError(연결 실패) 또는 ApiResponseError(4xx/5xx)를 전파한다.
+    재시도 정책은 max_attempts=1 — SlackNotifier와 동일한 사유
     """
 
     _EMBED_COLOR = 0x5865F2  # Discord brand blue
@@ -28,6 +28,7 @@ class DiscordNotifier(Notifier):
         self._webhook_url = webhook_url
         self._timeout = timeout
 
+    @retry(max_attempts=1)
     def send(self, report: DailyReport, report_url: str | None = None) -> None:
         embed = {
             "title": "📈 일일 주식 리포트",
