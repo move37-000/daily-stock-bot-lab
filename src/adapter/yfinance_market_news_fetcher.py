@@ -27,7 +27,7 @@ class YFinanceMarketNewsFetcher(MarketNewsFetcher):
 
     def fetch(self) -> list[NewsItem]:
         # NetworkError/ParseError로 번역하지 않는 이유: 호출측이 분류할 가치가
-        # 없다(어차피 []로 끝남). 
+        # 없다(어차피 []로 끝남).
         # @retry를 달지 않는 이유: 예외가 밖으로 나가지 않으므로
         # 데코레이터가 발동할 일이 없다.
         try:
