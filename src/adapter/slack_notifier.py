@@ -16,6 +16,8 @@ class SlackNotifier(Notifier):
     포함한다. 시장 뉴스는 HTML 리포트 전용이므로 알림에 포함하지 않는다.
 
     실패 시 NetworkError(연결 실패) 또는 ApiResponseError(4xx/5xx)를 전파한다.
+    중복 알림 가능성과, 채널 둘 중 하나만 성공하면 exit 0 이기에
+    max_attempts=1 -> 재시도하지 않는다.
     """
 
     def __init__(self, webhook_url: str, timeout: float = 10.0) -> None:
