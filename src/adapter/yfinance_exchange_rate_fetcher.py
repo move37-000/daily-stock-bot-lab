@@ -2,6 +2,8 @@ import requests
 import yfinance as yf
 
 from src.adapter._yfinance_common import calculate_change
+from src.common.errors import NetworkError, ParseError
+from src.common.retry import retry
 from src.domain.market import ExchangeRate
 from src.port.exchange_rate_fetcher import ExchangeRateFetcher
 
