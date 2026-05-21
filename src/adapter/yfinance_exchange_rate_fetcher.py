@@ -1,3 +1,4 @@
+import requests
 import yfinance as yf
 
 from src.adapter._yfinance_common import calculate_change
