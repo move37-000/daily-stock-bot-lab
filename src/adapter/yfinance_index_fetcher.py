@@ -42,9 +42,12 @@ class YFinanceIndexFetcher(IndexFetcher):
                 f"{name} ({symbol}) 지수 데이터 부족: {len(history)}일치"
             )
 
-        history = history.tail(self._history_days)
-        close, change, change_pct = calculate_change(history)
-        price_points = self._parse_history(history)
+        try:
+            history = history.tail(self._history_days)
+            close, change, change_pct = calculate_change(history)
+            price_points = self._parse_history(history)
+        except (KeyError, IndexError, ValueError, TypeError) as e:
+            raise ParseError(f"yfinance 응답 파싱 실패 ({name}, {symbol})") from e
 
         return IndexSnapshot(
             name=name,
