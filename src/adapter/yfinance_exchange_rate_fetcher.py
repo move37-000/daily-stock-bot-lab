@@ -27,6 +27,7 @@ class YFinanceExchangeRateFetcher(ExchangeRateFetcher):
         self._symbol = symbol
         self._pair = pair
 
+    @retry(max_attempts=3, delay=2.0)
     def fetch(self) -> ExchangeRate:
         ticker = yf.Ticker(self._symbol)
         history = ticker.history(period=self._PERIOD)
