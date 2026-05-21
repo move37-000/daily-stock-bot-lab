@@ -38,12 +38,21 @@ class DiscordNotifier(Notifier):
         }
         payload = {"embeds": [embed]}
 
-        response = requests.post(
-            self._webhook_url,
-            json=payload,
-            timeout=self._timeout,
-        )
-        response.raise_for_status()
+        try:
+            response = requests.post(
+                self._webhook_url,
+                json=payload,
+                timeout=self._timeout,
+            )
+            response.raise_for_status()
+        except requests.HTTPError as e:
+            raise ApiResponseError(
+                "Discord 알림 전송 실패",
+                status_code=e.response.status_code,
+                response_body=e.response.text,
+            ) from e
+        except requests.RequestException as e:
+            raise NetworkError("Discord 연결 실패") from e
 
     def _build_description(
         self, report: DailyReport, report_url: str | None
