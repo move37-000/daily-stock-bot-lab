@@ -15,8 +15,7 @@ class SlackNotifier(Notifier):
     메시지 본문에는 지수 요약, 환율, 상승/하락 카운트, top gainer/loser를
     포함한다. 시장 뉴스는 HTML 리포트 전용이므로 알림에 포함하지 않는다.
 
-    실패 시 예외를 전파한다 (requests.HTTPError 등). 호출측이 재시도·
-    스킵·중단 정책을 결정한다 (Notifier Port 규약).
+    실패 시 NetworkError(연결 실패) 또는 ApiResponseError(4xx/5xx)를 전파한다.
     """
 
     def __init__(self, webhook_url: str, timeout: float = 10.0) -> None:
@@ -25,6 +24,7 @@ class SlackNotifier(Notifier):
         self._webhook_url = webhook_url
         self._timeout = timeout
 
+    @retry(max_attempts=1)
     def send(self, report: DailyReport, report_url: str | None = None) -> None:
         message = self._build_message(report)
         blocks = self._build_blocks(message, report_url)
