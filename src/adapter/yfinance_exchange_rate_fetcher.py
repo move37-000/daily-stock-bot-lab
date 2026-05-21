@@ -29,8 +29,11 @@ class YFinanceExchangeRateFetcher(ExchangeRateFetcher):
 
     @retry(max_attempts=3, delay=2.0)
     def fetch(self) -> ExchangeRate:
-        ticker = yf.Ticker(self._symbol)
-        history = ticker.history(period=self._PERIOD)
+        try:
+            ticker = yf.Ticker(self._symbol)
+            history = ticker.history(period=self._PERIOD)
+        except requests.RequestException as e:
+            raise NetworkError(f"yfinance 연결 실패 ({self._pair}, {self._symbol})") from e
 
         if len(history) < 2:
             raise RuntimeError(
