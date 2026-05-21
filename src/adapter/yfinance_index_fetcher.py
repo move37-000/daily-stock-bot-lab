@@ -28,9 +28,12 @@ class YFinanceIndexFetcher(IndexFetcher):
 
     @retry(max_attempts=3, delay=2.0)
     def fetch(self, symbol: str, name: str) -> IndexSnapshot:
-        ticker = yf.Ticker(symbol)
-        period = f"{self._history_days + self._BUFFER_DAYS}d"
-        history = ticker.history(period=period)
+        try:
+            ticker = yf.Ticker(symbol)
+            period = f"{self._history_days + self._BUFFER_DAYS}d"
+            history = ticker.history(period=period)
+        except requests.RequestException as e:
+            raise NetworkError(f"yfinance 연결 실패 ({name}, {symbol})") from e
 
         if len(history) < 2:
             raise RuntimeError(
