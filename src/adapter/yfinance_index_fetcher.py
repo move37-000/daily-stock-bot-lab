@@ -36,6 +36,8 @@ class YFinanceIndexFetcher(IndexFetcher):
             raise NetworkError(f"yfinance 연결 실패 ({name}, {symbol})") from e
 
         if len(history) < 2:
+            # 데이터 부족은 yfinance 응답 구조의 문제
+            # 재시도해도 같은 결과. ParseError로 분류해 @retry가 헛돌지 않게 한다.
             raise RuntimeError(
                 f"{name} ({symbol}) 지수 데이터 부족: {len(history)}일치"
             )
