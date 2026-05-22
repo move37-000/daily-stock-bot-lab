@@ -26,6 +26,14 @@ class DailyReport:
     us_news: list[NewsItem]
     analysis: str | None = None
 
+    def __post_init__(self) -> None:
+        # 빈 us_stocks는 허용 불가.
+        # 인프라 예외(common.errors)가 아니라 파이썬 ValueError를 쓰는 이유:
+        # 이건 외부 시스템 사고가 아니라 호출자의 계약 위반이다(StockFetcher가
+        # 격리 정책을 어겼거나 누군가 잘못된 인자로 생성)
+        if not self.us_stocks:
+            raise ValueError("us_stocks가 비어있는 DailyReport는 생성할 수 없음")
+
     @property
     def us_up_count(self) -> int:
         return sum(1 for s in self.us_stocks if s.is_up)
