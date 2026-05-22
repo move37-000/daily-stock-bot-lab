@@ -90,16 +90,11 @@ def main() -> None:
         logger.error(f"미국 종목 수집 실패: {e}", exc_info=True)
         sys.exit(1)
 
-    logger.info("미국 지수 수집 중...")
-    try:
-        index_items = list(US_INDICES.items())
-        primary_symbol, primary_name = index_items[0]
-        secondary_symbol, secondary_name = index_items[1]
-        sp500 = index_fetcher.fetch(primary_symbol, primary_name)
-        nasdaq = index_fetcher.fetch(secondary_symbol, secondary_name)
-    except Exception as e:
-        logger.error(f"미국 지수 수집 실패: {e}", exc_info=True)
-        sys.exit(1)
+    # 지수 심볼 분해는 try 바깥 — config 누락(IndexError)은 외부 실패가 아니라
+    # 구성 오류이므로 fail-fast로 그대로 죽인다.
+    index_items = list(US_INDICES.items())
+    primary_symbol, primary_name = index_items[0]
+    secondary_symbol, secondary_name = index_items[1]
 
     logger.info("환율 수집 중...")
     try:
