@@ -15,6 +15,9 @@ class DailyReport:
 
     analysis 필드는 GeminiAnalyzer 결과를 담는다. AI 분석은 보조 정보이므로
     실패 시 None으로 유지하고, 호출측(main.py)이 try/except로 처리한다.
+
+    us_stocks는 비어있을 수 없다. top_gainer/top_loser가 max()/min()을 쓰므로
+    빈 리스트는 ValueError를 일으킨다.
     """
     date: date
     us_stocks: list[StockSnapshot]
