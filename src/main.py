@@ -96,6 +96,14 @@ def main() -> None:
     primary_symbol, primary_name = index_items[0]
     secondary_symbol, secondary_name = index_items[1]
 
+    logger.info("미국 지수 수집 중...")
+    try:
+        sp500 = index_fetcher.fetch(primary_symbol, primary_name)
+        nasdaq = index_fetcher.fetch(secondary_symbol, secondary_name)
+    except AdapterError as e:
+        logger.error(f"미국 지수 수집 실패: {e}", exc_info=True)
+        sys.exit(1)
+
     logger.info("환율 수집 중...")
     try:
         exchange_rate = exchange_fetcher.fetch()
