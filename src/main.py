@@ -86,12 +86,11 @@ def main() -> None:
     logger.info("미국 종목 수집 중...")
     try:
         us_stocks = stock_fetcher.fetch(US_TICKERS)
-    except Exception as e:
+    except AdapterError as e:
         logger.error(f"미국 종목 수집 실패: {e}", exc_info=True)
         sys.exit(1)
 
-    # 지수 심볼 분해는 try 바깥 — config 누락(IndexError)은 외부 실패가 아니라
-    # 구성 오류이므로 fail-fast로 그대로 죽인다.
+    # 지수 심볼 분해는 try 바깥 — config 누락(IndexError)은 외부 실패가 아니라 구성 오류
     index_items = list(US_INDICES.items())
     primary_symbol, primary_name = index_items[0]
     secondary_symbol, secondary_name = index_items[1]
@@ -107,7 +106,7 @@ def main() -> None:
     logger.info("환율 수집 중...")
     try:
         exchange_rate = exchange_fetcher.fetch()
-    except Exception as e:
+    except AdapterError as e:
         logger.error(f"환율 수집 실패: {e}", exc_info=True)
         sys.exit(1)
 
@@ -141,7 +140,7 @@ def main() -> None:
             analysis = analyzer.analyze(report)
             report = replace(report, analysis=analysis)
             logger.info("AI 분석 성공")
-        except Exception as e:
+        except AdapterError as e:
             logger.error(f"AI 분석 실패: {e}", exc_info=True)
 
     # =========================================================================
