@@ -153,7 +153,7 @@ def main() -> None:
         try:
             slack_notifier.send(report, REPORT_URL)
             logger.info("Slack 전송 성공")
-        except Exception as e:
+        except AdapterError as e:
             logger.error(f"Slack 전송 실패: {e}", exc_info=True)
             failed_notifiers.append("Slack")
 
@@ -162,7 +162,7 @@ def main() -> None:
         try:
             discord_notifier.send(report, REPORT_URL)
             logger.info("Discord 전송 성공")
-        except Exception as e:
+        except AdapterError as e:
             logger.error(f"Discord 전송 실패: {e}", exc_info=True)
             failed_notifiers.append("Discord")
 
