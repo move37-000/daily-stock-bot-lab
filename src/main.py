@@ -66,7 +66,7 @@ def main() -> None:
 
     discord_notifier: Notifier | None = None
     if DISCORD_WEBHOOK_URL:
-        discord_notifier = DiscordNotifier(webhook_url=DISCORD_WEBHOOK_URL) 
+        discord_notifier = DiscordNotifier(webhook_url=DISCORD_WEBHOOK_URL)
     else:
         logger.warning("DISCORD_WEBHOOK_URL 누락. Discord 알림 건너뜀.")
 
