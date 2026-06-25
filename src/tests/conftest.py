@@ -15,6 +15,8 @@ from src.port.notifier import Notifier
 from src.port.stock_fetcher import StockFetcher
 
 
+# ---------- 도메인 픽스처 ----------
+
 @pytest.fixture
 def sample_stock_daily() -> StockDaily:
     return StockDaily(
