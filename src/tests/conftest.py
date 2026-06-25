@@ -153,3 +153,13 @@ class FakeNotifier(Notifier):
         if self._raise is not None:
             raise self._raise
         self.sent.append((report, report_url))
+
+
+@pytest.fixture
+def fake_stock_fetcher(sample_stock_snapshot, sample_stock_snapshot_down):
+    return FakeStockFetcher([sample_stock_snapshot, sample_stock_snapshot_down])
+
+
+@pytest.fixture
+def fake_notifier():
+    return FakeNotifier()
