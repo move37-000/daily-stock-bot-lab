@@ -88,3 +88,13 @@ def sample_market_overview(sample_index_snapshot) -> MarketOverview:
         primary=sample_index_snapshot,
         secondary=nasdaq,
     )
+
+
+@pytest.fixture
+def sample_exchange_rate() -> ExchangeRate:
+    return ExchangeRate(
+        pair="USD/KRW",
+        price=1340.50,
+        change=-1.5,
+        change_pct=-0.11,
+    )
