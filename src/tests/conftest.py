@@ -35,3 +35,17 @@ def sample_news_item() -> NewsItem:
         publisher="Reuters",
         time="3월 19일 오후 2시 30분",
     )
+
+
+@pytest.fixture
+def sample_stock_snapshot(sample_stock_daily, sample_news_item) -> StockSnapshot:
+    return StockSnapshot(
+        symbol="AAPL",
+        name="Apple Inc.",
+        market=Market.US,
+        close=178.5,
+        change=2.3,
+        change_pct=1.31,
+        history=[sample_stock_daily],
+        news=[sample_news_item],
+    )
