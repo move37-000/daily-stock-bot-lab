@@ -41,3 +41,25 @@ class TestUpDownCount:
         """
         total = sample_daily_report.us_up_count + sample_daily_report.us_down_count
         assert total == len(sample_daily_report.us_stocks)
+
+
+class TestTopGainerLoser:
+    """change_pct 최대/최소 종목 반환."""
+
+    def test_top_gainer는_최대_변동률(self, sample_daily_report):
+        # AAPL: +1.31, MSFT: -1.23 → AAPL
+        assert sample_daily_report.top_gainer.symbol == "AAPL"
+
+    def test_top_loser는_최소_변동률(self, sample_daily_report):
+        assert sample_daily_report.top_loser.symbol == "MSFT"
+
+    def test_단일_종목이면_gainer_loser_동일(
+            self, sample_daily_report, sample_stock_snapshot,
+    ):
+        """경계 조건: 종목 1개면 top_gainer == top_loser.
+
+        호출측이 이걸 알고 분리 렌더링 여부를 결정해야 한다는 신호.
+        도메인은 예외 던지지 않고 같은 객체 반환.
+        """
+        single = replace(sample_daily_report, us_stocks=[sample_stock_snapshot])
+        assert single.top_gainer is single.top_loser
