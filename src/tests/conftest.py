@@ -14,3 +14,14 @@ from src.domain.stock import Market, StockDaily, StockSnapshot
 from src.port.notifier import Notifier
 from src.port.stock_fetcher import StockFetcher
 
+
+@pytest.fixture
+def sample_stock_daily() -> StockDaily:
+    return StockDaily(
+        date="2024-03-19",
+        open=176.0,
+        high=179.0,
+        low=175.5,
+        close=178.5,
+        volume=1_000_000,
+    )
