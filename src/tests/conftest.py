@@ -1,0 +1,15 @@
+"""Phase 4 공용 픽스처 + Fake 어댑터.
+
+도메인 객체 픽스처는 각 테스트에서 일부 필드만 바꿔 쓰기 좋게 최소 구성으로 둔다.
+Fake 어댑터는 Port를 명시 구현해 헥사고날의 "테스트 가능성" 약속을 실물로 증명한다.
+"""
+from datetime import date
+
+import pytest
+
+from src.domain.market import ExchangeRate, IndexSnapshot, MarketOverview, PricePoint
+from src.domain.news import NewsItem
+from src.domain.report import DailyReport
+from src.domain.stock import Market, StockDaily, StockSnapshot
+from src.port.notifier import Notifier
+from src.port.stock_fetcher import StockFetcher
