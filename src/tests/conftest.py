@@ -25,3 +25,13 @@ def sample_stock_daily() -> StockDaily:
         close=178.5,
         volume=1_000_000,
     )
+
+
+@pytest.fixture
+def sample_news_item() -> NewsItem:
+    return NewsItem(
+        title="Apple unveils new iPhone",
+        link="https://news.example.com/apple",
+        publisher="Reuters",
+        time="3월 19일 오후 2시 30분",
+    )
