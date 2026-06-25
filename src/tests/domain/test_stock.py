@@ -30,3 +30,20 @@ def _snapshot(
         change=change,
         change_pct=change_pct,
     )
+
+
+class TestIsUp:
+    """is_up: change >= 0 → True (경계 조건 0 포함)."""
+
+    def test_양수_상승(self):
+        assert _snapshot(change=2.3).is_up is True
+
+    def test_zero_상승_취급(self):
+        """경계 조건: 변동 0은 상승으로 분류.
+
+        하락 카운트에 포함되지 않게 하기 위한 정책 결정.
+        """
+        assert _snapshot(change=0.0).is_up is True
+
+    def test_음수_하락(self):
+        assert _snapshot(change=-1.5).is_up is False
