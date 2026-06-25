@@ -63,3 +63,13 @@ class TestTopGainerLoser:
         """
         single = replace(sample_daily_report, us_stocks=[sample_stock_snapshot])
         assert single.top_gainer is single.top_loser
+
+
+class TestAnalysisField:
+    def test_기본값_None(self, sample_daily_report):
+        """AI 분석 실패 시 None 유지가 정상 경로의 일부.
+
+        main.py가 analysis 생성 실패를 흡수하고 None으로 두는 정책.
+        도메인은 None을 정상값으로 받아들임.
+        """
+        assert sample_daily_report.analysis is None
