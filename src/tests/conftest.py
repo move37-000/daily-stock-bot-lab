@@ -116,3 +116,23 @@ def sample_daily_report(
         exchange_rate=sample_exchange_rate,
         us_news=[sample_news_item],
     )
+
+
+# ---------- Fake 어댑터 ----------
+
+
+class FakeStockFetcher(StockFetcher):
+    """StockFetcher Port의 테스트 전용 구현체.
+
+    외부 I/O 없이 생성자에서 받은 스냅샷 리스트를 그대로 반환한다.
+    Mock(`MagicMock(spec=StockFetcher)`)이 Port를 흉내내는 것과 달리,
+    Fake는 Port를 명시 상속해 mypy가 계약 위반을 정적으로 잡는다.
+    """
+
+    def __init__(self, snapshots: list[StockSnapshot]) -> None:
+        self._snapshots = snapshots
+        self.fetch_calls: list[dict[str, str]] = []
+
+    def fetch(self, tickers: dict[str, str]) -> list[StockSnapshot]:
+        self.fetch_calls.append(tickers)
+        return self._snapshots
