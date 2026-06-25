@@ -136,3 +136,20 @@ class FakeStockFetcher(StockFetcher):
     def fetch(self, tickers: dict[str, str]) -> list[StockSnapshot]:
         self.fetch_calls.append(tickers)
         return self._snapshots
+
+
+class FakeNotifier(Notifier):
+    """Notifier Port의 테스트 전용 구현체.
+
+    send()를 호출 기록만 남기고 통과시킨다. 호출측이 알림 실패를 어떻게
+    처리하는지 테스트할 땐 raise_on_send=True로 예외를 던지게 한다.
+    """
+
+    def __init__(self, raise_on_send: Exception | None = None) -> None:
+        self._raise = raise_on_send
+        self.sent: list[tuple[DailyReport, str | None]] = []
+
+    def send(self, report: DailyReport, report_url: str | None = None) -> None:
+        if self._raise is not None:
+            raise self._raise
+        self.sent.append((report, report_url))
