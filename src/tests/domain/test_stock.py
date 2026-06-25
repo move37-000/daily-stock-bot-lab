@@ -47,3 +47,38 @@ class TestIsUp:
 
     def test_음수_하락(self):
         assert _snapshot(change=-1.5).is_up is False
+
+
+class TestFormattedPrice:
+    """KR은 정수+콤마, US는 소수점 2자리+콤마."""
+
+    def test_US_소수점_2자리(self):
+        assert _snapshot(market=Market.US, close=178.5).formatted_price == "178.50"
+
+    def test_US_천단위_콤마(self):
+        assert _snapshot(market=Market.US, close=5234.567).formatted_price == "5,234.57"
+
+    def test_KR_정수_콤마(self):
+        assert _snapshot(market=Market.KR, close=71_500.0).formatted_price == "71,500"
+
+
+class TestEmoji:
+    def test_상승_초록(self):
+        assert _snapshot(change=1.0).emoji == "🟢"
+
+    def test_하락_빨강(self):
+        assert _snapshot(change=-1.0).emoji == "🔴"
+
+
+class TestFormattedChangePct:
+    """부호 포함 + 소수점 2자리 (예: '+1.73', '-0.45')."""
+
+    def test_양수_플러스_부호(self):
+        assert _snapshot(change_pct=1.731).formatted_change_pct == "+1.73"
+
+    def test_음수_마이너스_부호(self):
+        assert _snapshot(change_pct=-0.451).formatted_change_pct == "-0.45"
+
+    def test_zero_플러스_부호(self):
+        """경계: 0도 부호 +를 붙인다 (f-string `:+.2f` 동작)."""
+        assert _snapshot(change_pct=0.0).formatted_change_pct == "+0.00"
