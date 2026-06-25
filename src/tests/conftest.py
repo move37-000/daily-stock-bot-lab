@@ -13,3 +13,4 @@ from src.domain.report import DailyReport
 from src.domain.stock import Market, StockDaily, StockSnapshot
 from src.port.notifier import Notifier
 from src.port.stock_fetcher import StockFetcher
+
