@@ -62,3 +62,14 @@ def sample_stock_snapshot_down() -> StockSnapshot:
         change=-5.0,
         change_pct=-1.23,
     )
+
+
+@pytest.fixture
+def sample_index_snapshot() -> IndexSnapshot:
+    return IndexSnapshot(
+        name="S&P 500",
+        price=5200.00,
+        change=20.0,
+        change_pct=0.39,
+        history=[PricePoint(date="2024-03-19", price=5200.00)],
+    )
