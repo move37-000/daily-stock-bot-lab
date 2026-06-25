@@ -73,3 +73,18 @@ def sample_index_snapshot() -> IndexSnapshot:
         change_pct=0.39,
         history=[PricePoint(date="2024-03-19", price=5200.00)],
     )
+
+
+@pytest.fixture
+def sample_market_overview(sample_index_snapshot) -> MarketOverview:
+    nasdaq = IndexSnapshot(
+        name="NASDAQ",
+        price=16000.0,
+        change=50.0,
+        change_pct=0.31,
+    )
+    return MarketOverview(
+        market=Market.US,
+        primary=sample_index_snapshot,
+        secondary=nasdaq,
+    )
