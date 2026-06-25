@@ -98,3 +98,21 @@ def sample_exchange_rate() -> ExchangeRate:
         change=-1.5,
         change_pct=-0.11,
     )
+
+
+@pytest.fixture
+def sample_daily_report(
+    sample_stock_snapshot,
+    sample_stock_snapshot_down,
+    sample_market_overview,
+    sample_exchange_rate,
+    sample_news_item,
+) -> DailyReport:
+    """us_stocks 2개(상승 1 / 하락 1) 포함. top_gainer/top_loser 분리 검증 가능."""
+    return DailyReport(
+        date=date(2024, 3, 19),
+        us_stocks=[sample_stock_snapshot, sample_stock_snapshot_down],
+        us_market=sample_market_overview,
+        exchange_rate=sample_exchange_rate,
+        us_news=[sample_news_item],
+    )
