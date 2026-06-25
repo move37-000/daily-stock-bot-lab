@@ -49,3 +49,16 @@ def sample_stock_snapshot(sample_stock_daily, sample_news_item) -> StockSnapshot
         history=[sample_stock_daily],
         news=[sample_news_item],
     )
+
+
+@pytest.fixture
+def sample_stock_snapshot_down() -> StockSnapshot:
+    """change_pct 음수. top_loser 테스트용."""
+    return StockSnapshot(
+        symbol="MSFT",
+        name="Microsoft",
+        market=Market.US,
+        close=400.0,
+        change=-5.0,
+        change_pct=-1.23,
+    )
