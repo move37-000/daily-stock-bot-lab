@@ -12,3 +12,32 @@ DailyReport가 frozen=True 이므로 직접 수정 불가, replace로 새 인스
 from dataclasses import replace
 
 import pytest
+
+
+class TestPostInit:
+    """__post_init__ 불변식: 빈 us_stocks 거부."""
+
+    def test_빈_us_stocks_ValueError(self, sample_daily_report):
+        with pytest.raises(ValueError):
+            replace(sample_daily_report, us_stocks=[])
+
+
+class TestUpDownCount:
+    """us_up_count + us_down_count == len(us_stocks)."""
+
+    def test_us_up_count(self, sample_daily_report):
+        # 픽스처: 상승 1(AAPL) + 하락 1(MSFT)
+        assert sample_daily_report.us_up_count == 1
+
+    def test_us_down_count(self, sample_daily_report):
+        assert sample_daily_report.us_down_count == 1
+
+    def test_카운트_합은_전체_종목수(self, sample_daily_report):
+        """경계 검증: up + down은 항상 전체와 같다.
+
+        is_up이 change>=0이라 0(보합)도 up으로 분류되므로
+        "보합" 같은 제3카테고리가 없다 — 그 정책이 깨지지 않는지
+        합산으로 보장.
+        """
+        total = sample_daily_report.us_up_count + sample_daily_report.us_down_count
+        assert total == len(sample_daily_report.us_stocks)
