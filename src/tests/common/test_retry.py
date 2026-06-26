@@ -12,3 +12,19 @@ patch 경로는 src.common.retry.time.sleep — "정의된 곳(time 모듈)"이 
 "사용되는 곳(retry 모듈이 import한 time)"을 잡아야 효과가 있다.
 """
 import pytest
+
+from src.common.errors import ApiResponseError, NetworkError, ParseError
+from src.common.retry import retry
+
+
+class TestSuccessPath:
+    def test_성공시_즉시_반환(self, mocker):
+        """1회 시도로 성공하면 그대로 반환. sleep 호출 안 됨."""
+        mock_sleep = mocker.patch("src.common.retry.time.sleep")
+
+        @retry(max_attempts=3, delay=2.0)
+        def fn():
+            return "ok"
+
+        assert fn() == "ok"
+        assert mock_sleep.call_count == 0
