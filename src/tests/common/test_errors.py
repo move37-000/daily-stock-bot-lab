@@ -68,3 +68,21 @@ class TestApiResponseErrorFields:
         """super().__init__(message)로 전달된 메시지가 str()로 노출."""
         err = ApiResponseError("not found", status_code=404)
         assert str(err) == "not found"
+
+
+class TestExceptionChaining:
+    """raise ... from ... 으로 원인 예외가 __cause__에 보존된다."""
+
+    def test_raise_from_원인_보존(self):
+        """어댑터가 외부 예외를 잡아 AdapterError로 번역할 때의 패턴.
+
+        디버깅 시 원래 예외(yfinance.Exception 등)를 잃지 않게 한다.
+        """
+        original = ValueError("original cause")
+        try:
+            try:
+                raise original
+            except ValueError as e:
+                raise NetworkError("translated") from e
+        except NetworkError as e:
+            assert e.__cause__ is original
