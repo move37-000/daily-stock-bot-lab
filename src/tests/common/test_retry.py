@@ -168,3 +168,22 @@ class TestSleepBehavior:
         with pytest.raises(NetworkError):
             fn()
         mock_sleep.assert_called_once_with(1.5)
+
+
+class TestBoundaryConditions:
+    def test_max_attempts_1이면_재시도_없음(self, mocker):
+        """경계: max_attempts=1은 데코레이터 미적용과 동작 동일.
+
+        재시도 가능 예외라도 1회 시도 후 즉시 전파.
+        """
+        mock_sleep = mocker.patch("src.common.retry.time.sleep")
+        inner = mocker.Mock(side_effect=NetworkError("once"))
+
+        @retry(max_attempts=1, delay=2.0)
+        def fn():
+            return inner()
+
+        with pytest.raises(NetworkError):
+            fn()
+        assert inner.call_count == 1
+        assert mock_sleep.call_count == 0
