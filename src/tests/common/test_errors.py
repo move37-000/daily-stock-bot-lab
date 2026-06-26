@@ -36,3 +36,35 @@ class TestHierarchy:
 
         with pytest.raises(AdapterError):
             raise ApiResponseError("4xx", status_code=400)
+
+
+class TestApiResponseErrorFields:
+    """ApiResponseError만 생성자가 다르다 (status_code, response_body)."""
+
+    def test_status_code_저장(self):
+        err = ApiResponseError("rate limited", status_code=429)
+        assert err.status_code == 429
+
+    def test_response_body_저장(self):
+        err = ApiResponseError("bad", status_code=400, response_body="invalid input")
+        assert err.response_body == "invalid input"
+
+    def test_response_body_기본값_빈문자열(self):
+        err = ApiResponseError("server error", status_code=500)
+        assert err.response_body == ""
+
+    def test_response_body_200자_초과시_절삭(self):
+        """경계: response_body는 200자로 자른다.
+
+        로그 폭주 방지가 의도. retry.py의 _is_retryable이 이걸 보지 않으니
+        절삭으로 의미가 손실되진 않는다.
+        """
+        long_body = "x" * 500
+        err = ApiResponseError("oversize", status_code=500, response_body=long_body)
+        assert len(err.response_body) == 200
+        assert err.response_body == "x" * 200
+
+    def test_message는_str_으로_접근(self):
+        """super().__init__(message)로 전달된 메시지가 str()로 노출."""
+        err = ApiResponseError("not found", status_code=404)
+        assert str(err) == "not found"
