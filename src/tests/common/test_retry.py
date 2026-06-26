@@ -92,3 +92,48 @@ class TestRetryableExceptions:
             return inner()
 
         assert fn() == "ok"
+
+
+class TestNonRetryableExceptions:
+    """재시도 불가 예외는 즉시 전파 (재시도 안 함)."""
+
+    def test_ParseError_즉시_전파(self, mocker):
+        mock_sleep = mocker.patch("src.common.retry.time.sleep")
+        inner = mocker.Mock(side_effect=ParseError("bad json"))
+
+        @retry(max_attempts=3, delay=2.0)
+        def fn():
+            return inner()
+
+        with pytest.raises(ParseError):
+            fn()
+        assert inner.call_count == 1  # 재시도 없음
+        assert mock_sleep.call_count == 0
+
+    def test_ApiResponseError_4xx_즉시_전파(self, mocker):
+        """400 등 클라이언트 오류는 재시도 무의미."""
+        mock_sleep = mocker.patch("src.common.retry.time.sleep")
+        inner = mocker.Mock(side_effect=ApiResponseError("bad req", status_code=400))
+
+        @retry(max_attempts=3, delay=2.0)
+        def fn():
+            return inner()
+
+        with pytest.raises(ApiResponseError):
+            fn()
+        assert inner.call_count == 1
+        assert mock_sleep.call_count == 0
+
+    def test_알수없는_예외_즉시_전파(self, mocker):
+        """_is_retryable이 False를 반환하는 모든 예외."""
+        mock_sleep = mocker.patch("src.common.retry.time.sleep")
+        inner = mocker.Mock(side_effect=ValueError("unexpected"))
+
+        @retry(max_attempts=3, delay=2.0)
+        def fn():
+            return inner()
+
+        with pytest.raises(ValueError):
+            fn()
+        assert inner.call_count == 1
+        assert mock_sleep.call_count == 0
