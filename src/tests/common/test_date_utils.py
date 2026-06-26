@@ -13,3 +13,38 @@ from src.common.date_utils import (
     format_kr_news_time,
     format_us_news_time,
 )
+
+
+class TestFormatUsNewsTime:
+    """ISO 8601 → 한글 시간 포맷."""
+
+    def test_빈_문자열(self):
+        assert format_us_news_time("") == ""
+
+    def test_정상_변환_오전(self):
+        result = format_us_news_time("2024-03-18T09:30:00Z")
+        assert "3월 18일" in result
+        assert "오전" in result
+        assert "9시 30분" in result
+
+    def test_정상_변환_오후(self):
+        result = format_us_news_time("2024-03-18T14:30:00Z")
+        assert "3월 18일" in result
+        assert "오후" in result
+        assert "2시 30분" in result
+
+    def test_자정(self):
+        """자정(00시)은 오전 12시로 표시."""
+        result = format_us_news_time("2024-03-18T00:00:00Z")
+        assert "오전" in result
+        assert "12시" in result
+
+    def test_정오(self):
+        """정오(12시)는 오후 12시로 표시."""
+        result = format_us_news_time("2024-03-18T12:00:00Z")
+        assert "오후" in result
+        assert "12시" in result
+
+    def test_잘못된_포맷(self):
+        """파싱 실패 시 빈 문자열 (예외 던지지 않음)."""
+        assert format_us_news_time("invalid-date") == ""
