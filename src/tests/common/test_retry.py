@@ -48,3 +48,47 @@ class TestRetryableExceptions:
 
         assert fn() == "ok"
         assert inner.call_count == 3
+
+    def test_NetworkError_전회_실패시_마지막_예외_전파(self, mocker):
+        mocker.patch("src.common.retry.time.sleep")
+        inner = mocker.Mock(side_effect=[
+            NetworkError("attempt 1"),
+            NetworkError("attempt 2"),
+            NetworkError("attempt 3"),
+        ])
+
+        @retry(max_attempts=3, delay=2.0)
+        def fn():
+            return inner()
+
+        with pytest.raises(NetworkError, match="attempt 3"):
+            fn()
+        assert inner.call_count == 3
+
+    def test_ApiResponseError_5xx_재시도(self, mocker):
+        mocker.patch("src.common.retry.time.sleep")
+        inner = mocker.Mock(side_effect=[
+            ApiResponseError("server down", status_code=503),
+            "ok",
+        ])
+
+        @retry(max_attempts=3, delay=2.0)
+        def fn():
+            return inner()
+
+        assert fn() == "ok"
+        assert inner.call_count == 2
+
+    def test_ApiResponseError_429_재시도(self, mocker):
+        """4xx지만 Rate Limit은 재시도 가능."""
+        mocker.patch("src.common.retry.time.sleep")
+        inner = mocker.Mock(side_effect=[
+            ApiResponseError("rate limited", status_code=429),
+            "ok",
+        ])
+
+        @retry(max_attempts=3, delay=2.0)
+        def fn():
+            return inner()
+
+        assert fn() == "ok"
