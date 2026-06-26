@@ -48,3 +48,26 @@ class TestFormatUsNewsTime:
     def test_잘못된_포맷(self):
         """파싱 실패 시 빈 문자열 (예외 던지지 않음)."""
         assert format_us_news_time("invalid-date") == ""
+
+
+class TestFormatKrNewsTime:
+    """네이버 형식 (YYYYMMDDHHMM) → 한글 시간 포맷."""
+
+    def test_빈_문자열(self):
+        assert format_kr_news_time("") == ""
+
+    def test_짧은_문자열(self):
+        """12자 미만은 빈 문자열."""
+        assert format_kr_news_time("20240318") == ""
+
+    def test_정상_변환_오전(self):
+        result = format_kr_news_time("202403180930")
+        assert "3월 18일" in result
+        assert "오전" in result
+        assert "9시 30분" in result
+
+    def test_정상_변환_오후(self):
+        result = format_kr_news_time("202403181430")
+        assert "3월 18일" in result
+        assert "오후" in result
+        assert "2시 30분" in result
