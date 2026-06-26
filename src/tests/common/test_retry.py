@@ -28,3 +28,23 @@ class TestSuccessPath:
 
         assert fn() == "ok"
         assert mock_sleep.call_count == 0
+
+
+class TestRetryableExceptions:
+    """재시도 가능 예외는 재시도 후 성공 또는 마지막 예외 전파."""
+
+    def test_NetworkError_재시도_후_성공(self, mocker):
+        """1, 2회 실패하고 3회에 성공하는 시나리오."""
+        mocker.patch("src.common.retry.time.sleep")
+        inner = mocker.Mock(side_effect=[
+            NetworkError("flaky 1"),
+            NetworkError("flaky 2"),
+            "ok",
+        ])
+
+        @retry(max_attempts=3, delay=2.0)
+        def fn():
+            return inner()
+
+        assert fn() == "ok"
+        assert inner.call_count == 3
