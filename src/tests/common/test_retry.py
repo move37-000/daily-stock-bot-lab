@@ -137,3 +137,34 @@ class TestNonRetryableExceptions:
             fn()
         assert inner.call_count == 1
         assert mock_sleep.call_count == 0
+
+
+class TestSleepBehavior:
+    """§7.7 핵심: time.sleep이 실제로 호출되는지 검증."""
+
+    def test_재시도_사이_sleep_호출_횟수(self, mocker):
+        """3회 시도하고 모두 재시도 가능 예외 → sleep 2회.
+
+        마지막 실패 후엔 sleep 없이 raise (불필요한 대기 차단).
+        """
+        mock_sleep = mocker.patch("src.common.retry.time.sleep")
+
+        @retry(max_attempts=3, delay=2.0)
+        def fn():
+            raise NetworkError("flaky")
+
+        with pytest.raises(NetworkError):
+            fn()
+        assert mock_sleep.call_count == 2
+
+    def test_sleep이_delay값으로_호출(self, mocker):
+        """delay=1.5가 그대로 time.sleep에 전달되는지."""
+        mock_sleep = mocker.patch("src.common.retry.time.sleep")
+
+        @retry(max_attempts=2, delay=1.5)
+        def fn():
+            raise NetworkError("flaky")
+
+        with pytest.raises(NetworkError):
+            fn()
+        mock_sleep.assert_called_once_with(1.5)
