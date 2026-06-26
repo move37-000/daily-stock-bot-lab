@@ -71,3 +71,23 @@ class TestFormatKrNewsTime:
         assert "3월 18일" in result
         assert "오후" in result
         assert "2시 30분" in result
+
+
+class TestFormatKoreanTime:
+    """내부 헬퍼: datetime → 한글 포맷 문자열."""
+
+    def test_오전(self):
+        dt = datetime(2024, 3, 18, 9, 30)
+        assert _format_korean_time(dt) == "3월 18일 오전 9시 30분"
+
+    def test_오후(self):
+        dt = datetime(2024, 3, 18, 15, 45)
+        assert _format_korean_time(dt) == "3월 18일 오후 3시 45분"
+
+    def test_자정(self):
+        dt = datetime(2024, 3, 18, 0, 0)
+        assert _format_korean_time(dt) == "3월 18일 오전 12시 0분"
+
+    def test_정오(self):
+        dt = datetime(2024, 3, 18, 12, 0)
+        assert _format_korean_time(dt) == "3월 18일 오후 12시 0분"
