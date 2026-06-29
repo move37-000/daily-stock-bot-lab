@@ -56,3 +56,14 @@ def _yf_news_dict(
             "clickThroughUrl": {"url": url},
         }
     }
+
+
+def _make_ticker(mocker, history=None, news=None, history_exc=None):
+    """yf.Ticker(...) 호출이 반환할 mock 객체 1개 생성."""
+    ticker = mocker.MagicMock()
+    if history is not None:
+        ticker.history.return_value = history
+    if history_exc is not None:
+        ticker.history.side_effect = history_exc
+    ticker.news = news if news is not None else []
+    return ticker
