@@ -252,3 +252,28 @@ class TestNewsIsolation:
         assert result[0].news == []  # 뉴스만 격리
         assert result[0].close == 178.5  # 본체는 정상
         assert result[0].change == pytest.approx(1.5)
+
+    def test_뉴스_정상_파싱시_NewsItem_리스트(self, mocker):
+        """ticker.news를 yfinance 응답 형태로 mock하면 parse_yfinance_news가
+        실호출되어 NewsItem 변환을 거친다.
+
+        parse_yfinance_news 자체의 동작(yfinance dict → NewsItem)이 이 테스트로
+        간접 검증된다. _yfinance_common 단독 테스트가 없는 이유.
+        """
+        ticker = _make_ticker(
+            mocker,
+            history=_history_df([177.0, 178.5]),
+            news=[
+                _yf_news_dict(title="Apple unveils", url="https://ex.com/1"),
+                _yf_news_dict(title="MSFT acquires", url="https://ex.com/2"),
+            ],
+        )
+        mocker.patch("src.adapter.yfinance_fetcher.yf.Ticker", return_value=ticker)
+
+        result = YFinanceFetcher(news_limit=2).fetch({"AAPL": "Apple"})
+
+        news = result[0].news
+        assert len(news) == 2
+        assert news[0].title == "Apple unveils"
+        assert news[0].link == "https://ex.com/1"
+        assert news[0].publisher == "Reuters"
