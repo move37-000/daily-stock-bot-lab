@@ -18,3 +18,24 @@ import requests
 from src.adapter.yfinance_fetcher import YFinanceFetcher
 from src.common.errors import NetworkError
 from src.domain.stock import Market
+
+
+# ---------- mock 데이터 헬퍼 ----------
+
+def _history_df(closes: list[float]) -> pd.DataFrame:
+    """yfinance Ticker.history(period="5d")가 반환하는 DataFrame 모킹.
+
+    Close 값만 받고 나머지 OHLV는 적당히 채운다.
+    calculate_change()가 close[-1], close[-2]만 보므로 close 정확성이 중요.
+    """
+    n = len(closes)
+    return pd.DataFrame(
+        {
+            "Open": [c - 1.0 for c in closes],
+            "High": [c + 1.0 for c in closes],
+            "Low": [c - 2.0 for c in closes],
+            "Close": closes,
+            "Volume": [1_000_000] * n,
+        },
+        index=pd.to_datetime([f"2024-03-{18 + i:02d}" for i in range(n)]),
+    )
