@@ -208,3 +208,23 @@ class TestAllFailure:
         """
         mock_sleep = mocker.patch("src.common.retry.time.sleep")
         ticker_call_count = 0
+
+    def _failing_ticker(*_args, **_kwargs):
+        nonlocal ticker_call_count
+        ticker_call_count += 1
+        t = mocker.MagicMock()
+        t.history.side_effect = requests.RequestException("conn lost")
+        return t
+
+    mocker.patch(
+        "src.adapter.yfinance_fetcher.yf.Ticker",
+        side_effect=_failing_ticker,
+    )
+
+    with pytest.raises(NetworkError):
+        YFinanceFetcher().fetch({"AAPL": "Apple", "MSFT": "Microsoft"})
+
+    # 3시도 × 2종목 = 6회 yf.Ticker 호출
+    assert ticker_call_count == 6
+    # 3시도 사이 sleep 2회 (마지막 실패 후엔 sleep 없음)
+    assert mock_sleep.call_count == 2
