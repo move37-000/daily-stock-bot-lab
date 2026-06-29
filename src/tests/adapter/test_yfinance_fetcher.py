@@ -169,3 +169,20 @@ class TestPartialFailureIsolation:
 
         assert len(result) == 1
         assert result[0].symbol == "AAPL"
+
+
+class TestAllFailure:
+    """전종목 실패 시 상위로 NetworkError raise → @retry 발동.
+
+    이게 docstring 약속의 핵심: 전종목 동시 실패는 yfinance 일시 장애로 해석,
+    2초 후 재시도로 자동 복구를 시도한다. 단종목 실패는 for문이 흡수하므로
+    @retry가 발동할 일이 없다.
+    """
+
+    def test_전종목_실패시_NetworkError(self, mocker):
+        """전종목 실패 → NetworkError로 raise.
+
+        @retry가 발동해 3회 시도하므로 time.sleep을 mock해야 테스트가 빠르다.
+        side_effect를 함수로 둬 매 호출마다 새 mock 반환 (3시도 × 2종목 = 6회).
+        """
+        mocker.patch("src.common.retry.time.sleep")
