@@ -42,7 +42,7 @@ class YFinanceFetcher(StockFetcher):
                 logger.warning(f"미국 주식 조회 실패 ({symbol}): {e}")
 
         if not results and errors:
-            raise RuntimeError(f"모든 미국 종목 조회 실패: {errors}")
+            raise NetworkError(f"모든 미국 종목 조회 실패: {errors}")
 
         return results
 
