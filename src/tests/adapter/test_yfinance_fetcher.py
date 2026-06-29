@@ -146,3 +146,26 @@ class TestPartialFailureIsolation:
 
         assert len(result) == 1
         assert result[0].symbol == "AAPL"
+
+    def test_파싱_예외_종목_제외하고_나머지_반환(self, mocker):
+        """KeyError 등 → ParseError 번역 → for문이 흡수.
+
+        ParseError 자체는 @retry 비대상(_is_retryable=False)이지만,
+        단종목 단위로는 for문이 흡수하므로 fetch() 호출 전체가 깨지지 않음.
+        """
+        # Close 컬럼이 없는 broken DataFrame
+        broken_df = pd.DataFrame(
+            {"Wrong": [1, 2]},
+            index=pd.to_datetime(["2024-03-18", "2024-03-19"]),
+        )
+        bad = _make_ticker(mocker, history=broken_df)
+        aapl = _make_ticker(mocker, history=_history_df([177.0, 178.5]))
+        mocker.patch(
+            "src.adapter.yfinance_fetcher.yf.Ticker",
+            side_effect=[bad, aapl],
+        )
+
+        result = YFinanceFetcher().fetch({"BAD": "Bad", "AAPL": "Apple"})
+
+        assert len(result) == 1
+        assert result[0].symbol == "AAPL"
