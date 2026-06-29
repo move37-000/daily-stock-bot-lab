@@ -186,3 +186,16 @@ class TestAllFailure:
         side_effect를 함수로 둬 매 호출마다 새 mock 반환 (3시도 × 2종목 = 6회).
         """
         mocker.patch("src.common.retry.time.sleep")
+
+    def _failing_ticker(*_args, **_kwargs):
+        t = mocker.MagicMock()
+        t.history.side_effect = requests.RequestException("conn lost")
+        return t
+
+    mocker.patch(
+        "src.adapter.yfinance_fetcher.yf.Ticker",
+        side_effect=_failing_ticker,
+    )
+
+    with pytest.raises(NetworkError, match="모든 미국 종목 조회 실패"):
+        YFinanceFetcher().fetch({"AAPL": "Apple", "MSFT": "Microsoft"})
