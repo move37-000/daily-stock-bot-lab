@@ -130,3 +130,19 @@ class TestPartialFailureIsolation:
 
         assert len(result) == 1
         assert result[0].symbol == "AAPL"
+
+    def test_RequestException_종목_제외하고_나머지_반환(self, mocker):
+        """단종목 RequestException → NetworkError 번역 → for문이 흡수."""
+        bad = _make_ticker(
+            mocker, history_exc=requests.RequestException("connection lost"),
+        )
+        aapl = _make_ticker(mocker, history=_history_df([177.0, 178.5]))
+        mocker.patch(
+            "src.adapter.yfinance_fetcher.yf.Ticker",
+            side_effect=[bad, aapl],
+        )
+
+        result = YFinanceFetcher().fetch({"BAD": "Bad", "AAPL": "Apple"})
+
+        assert len(result) == 1
+        assert result[0].symbol == "AAPL"
