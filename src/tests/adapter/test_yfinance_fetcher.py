@@ -94,17 +94,39 @@ class TestNormalPath:
         assert len(snap.history) == 2
         assert len(snap.news) == 1
 
-def test_다종목_모두_정상(self, mocker):
-    """yf.Ticker 호출 순서대로 다른 mock 반환 (dict iteration 순서 = 호출 순서)."""
-    aapl = _make_ticker(mocker, history=_history_df([177.0, 178.5]))
-    msft = _make_ticker(mocker, history=_history_df([395.0, 400.0]))
-    mocker.patch(
-        "src.adapter.yfinance_fetcher.yf.Ticker",
-        side_effect=[aapl, msft],
-    )
+    def test_다종목_모두_정상(self, mocker):
+        """yf.Ticker 호출 순서대로 다른 mock 반환 (dict iteration 순서 = 호출 순서)."""
+        aapl = _make_ticker(mocker, history=_history_df([177.0, 178.5]))
+        msft = _make_ticker(mocker, history=_history_df([395.0, 400.0]))
+        mocker.patch(
+            "src.adapter.yfinance_fetcher.yf.Ticker",
+            side_effect=[aapl, msft],
+        )
 
-    result = YFinanceFetcher().fetch({"AAPL": "Apple", "MSFT": "Microsoft"})
+        result = YFinanceFetcher().fetch({"AAPL": "Apple", "MSFT": "Microsoft"})
 
-    assert len(result) == 2
-    assert result[0].symbol == "AAPL"
-    assert result[1].symbol == "MSFT"
+        assert len(result) == 2
+        assert result[0].symbol == "AAPL"
+        assert result[1].symbol == "MSFT"
+
+
+class TestPartialFailureIsolation:
+    """단종목 실패는 격리되고 나머지 종목 반환."""
+
+    def test_history_empty_종목_스킵(self, mocker):
+        """경계: 빈 DataFrame은 ParseError가 아닌 '데이터 없음' 의미.
+
+        상장 폐지·잘못된 심볼 등 상시 발생 시나리오. 해당 종목만 스킵하고
+        나머지가 있으면 그것을 반환. errors 리스트에도 안 들어감.
+        """
+        empty = _make_ticker(mocker, history=pd.DataFrame())
+        aapl = _make_ticker(mocker, history=_history_df([177.0, 178.5]))
+        mocker.patch(
+            "src.adapter.yfinance_fetcher.yf.Ticker",
+            side_effect=[empty, aapl],
+        )
+
+        result = YFinanceFetcher().fetch({"BAD": "Bad", "AAPL": "Apple"})
+
+        assert len(result) == 1
+        assert result[0].symbol == "AAPL"
