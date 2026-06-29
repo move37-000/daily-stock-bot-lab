@@ -39,3 +39,20 @@ def _history_df(closes: list[float]) -> pd.DataFrame:
         },
         index=pd.to_datetime([f"2024-03-{18 + i:02d}" for i in range(n)]),
     )
+
+
+def _yf_news_dict(
+    title: str = "Apple unveils new iPhone",
+    url: str = "https://news.example.com/1",
+    publisher: str = "Reuters",
+    pub_date: str = "2024-03-18T10:30:00Z",
+) -> dict:
+    """yfinance Ticker.news 응답 1건 형태."""
+    return {
+        "content": {
+            "title": title,
+            "provider": {"displayName": publisher},
+            "pubDate": pub_date,
+            "clickThroughUrl": {"url": url},
+        }
+    }
