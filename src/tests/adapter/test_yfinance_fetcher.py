@@ -228,3 +228,27 @@ class TestAllFailure:
     assert ticker_call_count == 6
     # 3시도 사이 sleep 2회 (마지막 실패 후엔 sleep 없음)
     assert mock_sleep.call_count == 2
+
+
+class TestNewsIsolation:
+    """§7.9 StockFetcher 측면: 뉴스 파싱 실패는 news=[]로 흡수, 스냅샷은 정상."""
+
+    def test_뉴스_파싱_예외시_news_빈리스트_스냅샷은_정상(self, mocker):
+        """_fetch_news_safely가 parse_yfinance_news 예외를 흡수.
+
+        뉴스만 빈 리스트, close/change 등 본체는 정상.
+        StockFetcher Port의 격리 약속을 stock 어댑터 측에서 보장.
+        """
+        ticker = _make_ticker(mocker, history=_history_df([177.0, 178.5]))
+        mocker.patch("src.adapter.yfinance_fetcher.yf.Ticker", return_value=ticker)
+        mocker.patch(
+            "src.adapter.yfinance_fetcher.parse_yfinance_news",
+            side_effect=AttributeError("yfinance internal change"),
+        )
+
+        result = YFinanceFetcher().fetch({"AAPL": "Apple"})
+
+        assert len(result) == 1
+        assert result[0].news == []  # 뉴스만 격리
+        assert result[0].close == 178.5  # 본체는 정상
+        assert result[0].change == pytest.approx(1.5)
