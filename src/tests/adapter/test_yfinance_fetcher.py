@@ -11,3 +11,10 @@
 DataFrame과 yfinance 뉴스 dict 생성 헬퍼를 분리했다. 각 테스트가
 중요한 차이만 짚을 수 있도록.
 """
+import pandas as pd
+import pytest
+import requests
+
+from src.adapter.yfinance_fetcher import YFinanceFetcher
+from src.common.errors import NetworkError
+from src.domain.stock import Market
