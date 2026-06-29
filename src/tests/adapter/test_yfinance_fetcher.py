@@ -93,3 +93,18 @@ class TestNormalPath:
         assert snap.change_pct == pytest.approx(0.847, abs=0.01)
         assert len(snap.history) == 2
         assert len(snap.news) == 1
+
+def test_다종목_모두_정상(self, mocker):
+    """yf.Ticker 호출 순서대로 다른 mock 반환 (dict iteration 순서 = 호출 순서)."""
+    aapl = _make_ticker(mocker, history=_history_df([177.0, 178.5]))
+    msft = _make_ticker(mocker, history=_history_df([395.0, 400.0]))
+    mocker.patch(
+        "src.adapter.yfinance_fetcher.yf.Ticker",
+        side_effect=[aapl, msft],
+    )
+
+    result = YFinanceFetcher().fetch({"AAPL": "Apple", "MSFT": "Microsoft"})
+
+    assert len(result) == 2
+    assert result[0].symbol == "AAPL"
+    assert result[1].symbol == "MSFT"
