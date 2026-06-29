@@ -81,3 +81,15 @@ class TestNormalPath:
         mocker.patch("src.adapter.yfinance_fetcher.yf.Ticker", return_value=ticker)
 
         result = YFinanceFetcher().fetch({"AAPL": "Apple"})
+
+        assert len(result) == 1
+        snap = result[0]
+        assert snap.symbol == "AAPL"
+        assert snap.name == "Apple"
+        assert snap.market is Market.US
+        assert snap.close == 178.5
+        assert snap.change == pytest.approx(1.5)
+        # 178.5 - 177.0 = 1.5, 1.5/177.0 * 100 ≈ 0.847
+        assert snap.change_pct == pytest.approx(0.847, abs=0.01)
+        assert len(snap.history) == 2
+        assert len(snap.news) == 1
