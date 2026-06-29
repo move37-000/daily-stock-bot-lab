@@ -277,3 +277,18 @@ class TestNewsIsolation:
         assert news[0].title == "Apple unveils"
         assert news[0].link == "https://ex.com/1"
         assert news[0].publisher == "Reuters"
+
+
+class TestConstructorParameters:
+    def test_news_limit이_parse에_전달(self, mocker):
+        """news_limit=2면 응답이 5개여도 2개만 변환."""
+        ticker = _make_ticker(
+            mocker,
+            history=_history_df([177.0, 178.5]),
+            news=[_yf_news_dict() for _ in range(5)],
+        )
+        mocker.patch("src.adapter.yfinance_fetcher.yf.Ticker", return_value=ticker)
+
+        result = YFinanceFetcher(news_limit=2).fetch({"AAPL": "Apple"})
+
+        assert len(result[0].news) == 2
