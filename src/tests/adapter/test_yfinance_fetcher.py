@@ -199,3 +199,12 @@ class TestAllFailure:
 
     with pytest.raises(NetworkError, match="모든 미국 종목 조회 실패"):
         YFinanceFetcher().fetch({"AAPL": "Apple", "MSFT": "Microsoft"})
+
+    def test_전종목_실패시_retry_3회_발동(self, mocker):
+        """전종목 실패의 부가 검증: @retry가 정확히 3회 시도, sleep 2회.
+
+        앞 테스트와 같은 시나리오지만 관심사가 다르다.
+        예외 타입은 위에서 검증, 여기는 retry 동작 보장.
+        """
+        mock_sleep = mocker.patch("src.common.retry.time.sleep")
+        ticker_call_count = 0
