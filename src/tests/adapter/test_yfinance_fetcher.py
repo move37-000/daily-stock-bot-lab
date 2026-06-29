@@ -67,3 +67,17 @@ def _make_ticker(mocker, history=None, news=None, history_exc=None):
         ticker.history.side_effect = history_exc
     ticker.news = news if news is not None else []
     return ticker
+
+
+# ---------- 테스트 ----------
+
+class TestNormalPath:
+    def test_단일_종목_정상_반환(self, mocker):
+        ticker = _make_ticker(
+            mocker,
+            history=_history_df([177.0, 178.5]),
+            news=[_yf_news_dict()],
+        )
+        mocker.patch("src.adapter.yfinance_fetcher.yf.Ticker", return_value=ticker)
+
+        result = YFinanceFetcher().fetch({"AAPL": "Apple"})
