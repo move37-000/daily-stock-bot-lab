@@ -1,6 +1,7 @@
 import pandas as pd
 import yfinance as yf
 
+from src.domain.market import PricePoint
 from src.common.date_utils import format_us_news_time
 from src.domain.news import NewsItem
 
@@ -18,6 +19,18 @@ def calculate_change(history: pd.DataFrame) -> tuple[float, float, float]:
     change = close - prev_close
     change_pct = (change / prev_close) * 100
     return close, change, change_pct
+
+
+def parse_price_history(history: pd.DataFrame) -> list[PricePoint]:
+    """yfinance history DataFrame을 PricePoint 리스트로 변환.
+
+    지수·환율 어댑터가 스파크라인 시계열을 만들 때 공유한다 (종가만 사용).
+    종목용 OHLCV 변환(StockDaily)과는 별개 — 그쪽은 전체 필드를 보존한다.
+    """
+    return [
+        PricePoint(date=ts.strftime("%Y-%m-%d"), price=float(row["Close"]))
+        for ts, row in history.iterrows()
+    ]
 
 
 def parse_yfinance_news(ticker: yf.Ticker, limit: int) -> list[NewsItem]:

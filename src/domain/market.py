@@ -61,11 +61,15 @@ class MarketOverview:
 
 @dataclass(frozen=True)
 class ExchangeRate:
-    """환율 스냅샷 (USD/KRW 등)"""
+    """환율 스냅샷 (USD/KRW 등)
+
+    지수와 동일하게 스파크라인용 history를 보유한다 (Phase 5 복원).
+    """
     pair: str
     price: float
     change: float
     change_pct: float
+    history: list[PricePoint] = field(default_factory=list)
 
     @property
     def is_up(self) -> bool:
