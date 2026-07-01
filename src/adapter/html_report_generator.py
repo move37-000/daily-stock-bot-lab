@@ -10,3 +10,8 @@ DailyReport(도메인)를 받아 Jinja2 템플릿으로 HTML 파일을 만든다
     흐르던 원본과 달리, 이 dict는 build_view_model 밖으로 나가지 않는다.
 """
 import dataclasses
+
+from src.config import LOGO_API_TOKEN, LOGO_API_URL, US_STOCK_DOMAINS
+from src.domain.market import ExchangeRate, IndexSnapshot, MarketOverview
+from src.domain.report import DailyReport
+from src.domain.stock import StockSnapshot
