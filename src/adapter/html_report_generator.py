@@ -16,6 +16,12 @@ from src.domain.market import ExchangeRate, IndexSnapshot, MarketOverview
 from src.domain.report import DailyReport
 from src.domain.stock import StockSnapshot
 
+from datetime import datetime
+from pathlib import Path
+from zoneinfo import ZoneInfo
+
+from jinja2 import Environment, FileSystemLoader
+
 
 def _logo_url(symbol: str) -> str:
     """symbol → logo.dev URL. 매핑에 없으면 빈 문자열(템플릿 onerror가 폴백)."""
