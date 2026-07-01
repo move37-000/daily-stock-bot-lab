@@ -555,13 +555,9 @@
         <div class="market-card-left">
           <div class="market-label">S&P 500</div>
           <div class="market-value">{{ us_market.sp500.price }}</div>
-          {% if us_market.sp500.change_pct != '-' %}
           <div class="market-change {% if us_market.sp500.change > 0 %}change-up{% elif us_market.sp500.change < 0 %}change-down{% else %}change-neutral{% endif %}">
             {% if us_market.sp500.change > 0 %}▲{% elif us_market.sp500.change < 0 %}▼{% else %}-{% endif %} {{ us_market.sp500.change_pct }}%
           </div>
-          {% else %}
-          <div class="market-change change-neutral">데이터 없음</div>
-          {% endif %}
         </div>
         <div class="market-card-right">
           <div class="sparkline" id="spark-sp500" data-history='{{ us_market.sp500.history | tojson }}' data-change="{{ us_market.sp500.change }}"></div>
@@ -573,13 +569,9 @@
         <div class="market-card-left">
           <div class="market-label">NASDAQ</div>
           <div class="market-value">{{ us_market.nasdaq.price }}</div>
-          {% if us_market.nasdaq.change_pct != '-' %}
           <div class="market-change {% if us_market.nasdaq.change > 0 %}change-up{% elif us_market.nasdaq.change < 0 %}change-down{% else %}change-neutral{% endif %}">
             {% if us_market.nasdaq.change > 0 %}▲{% elif us_market.nasdaq.change < 0 %}▼{% else %}-{% endif %} {{ us_market.nasdaq.change_pct }}%
           </div>
-          {% else %}
-          <div class="market-change change-neutral">데이터 없음</div>
-          {% endif %}
         </div>
         <div class="market-card-right">
           <div class="sparkline" id="spark-nasdaq" data-history='{{ us_market.nasdaq.history | tojson }}' data-change="{{ us_market.nasdaq.change }}"></div>
@@ -633,7 +625,6 @@
   </div>
   {% endif %}
 
-  {% if usd_krw and usd_krw.price != '-' %}
   <div class="exchange-card">
     <div class="exchange-content">
       <div class="exchange-left">
@@ -648,7 +639,6 @@
       </div>
     </div>
   </div>
-  {% endif %}
 
   {% if ai_comment %}
   <div class="section-label">🤖 AI Analysis</div>
