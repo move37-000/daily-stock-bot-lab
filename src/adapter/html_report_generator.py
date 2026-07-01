@@ -41,3 +41,19 @@ def _exchange_view(rate: ExchangeRate) -> dict:
         "change_pct": rate.formatted_change_pct,
         "history": [dataclasses.asdict(p) for p in rate.history],
     }
+
+
+def _stock_view(stock: StockSnapshot) -> dict:
+    return {
+        "symbol": stock.symbol,
+        "name": stock.name,
+        "price": stock.formatted_price,
+        "change": stock.change,
+        "change_pct": stock.formatted_change_pct,
+        "logo": _logo_url(stock.symbol),
+        # StockDaily(OHLCV) → 차트용 {date, price}로 정규화.
+        # 지수/환율 history(PricePoint)는 이미 {date, price}라 asdict로 충분하나
+        # 종목은 close를 price로 바꿔야 JS(d.price)가 읽는다.
+        "history": [{"date": d.date, "price": d.close} for d in stock.history],
+        "news": [dataclasses.asdict(n) for n in stock.news],
+    }
