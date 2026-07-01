@@ -22,6 +22,38 @@ from zoneinfo import ZoneInfo
 
 from jinja2 import Environment, FileSystemLoader
 
+_KST = ZoneInfo("Asia/Seoul")
+_PROJECT_ROOT = Path(__file__).parent.parent.parent
+_REPORTS_DIR = _PROJECT_ROOT / "reports"
+_ENV = Environment(
+    loader=FileSystemLoader(_PROJECT_ROOT / "templates"),
+    autoescape=True,
+)
+
+
+def generate_report(report: DailyReport) -> str:
+    """DailyReport를 HTML로 렌더링해 reports/에 저장하고 파일 경로를 반환한다.
+
+    반환 경로는 로깅·워크플로우(ls -t로 최신 선택)용이다. 알림 링크는 고정
+    REPORT_URL(Pages 루트)을 쓰므로 파일명과 무관하다.
+
+    report_date는 도메인(report.date), generated_at은 생성 시각(now, KST).
+    실패를 삼키지 않는다 — 원본의 except Exception + log와 정반대.
+    """
+    template = _ENV.get_template("report.html")
+    generated_at = datetime.now(_KST).strftime("%Y-%m-%d %H:%M KST")
+
+    html = template.render(
+        report_date=report.date.strftime("%Y-%m-%d"),
+        generated_at=generated_at,
+        **build_view_model(report),
+    )
+
+    _REPORTS_DIR.mkdir(exist_ok=True)
+    file_path = _REPORTS_DIR / f"report_{report.date:%Y%m%d}.html"
+    file_path.write_text(html, encoding="utf-8")
+    return str(file_path)
+
 
 def _logo_url(symbol: str) -> str:
     """symbol → logo.dev URL. 매핑에 없으면 빈 문자열(템플릿 onerror가 폴백)."""
