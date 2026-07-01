@@ -15,3 +15,11 @@ from src.config import LOGO_API_TOKEN, LOGO_API_URL, US_STOCK_DOMAINS
 from src.domain.market import ExchangeRate, IndexSnapshot, MarketOverview
 from src.domain.report import DailyReport
 from src.domain.stock import StockSnapshot
+
+
+def _logo_url(symbol: str) -> str:
+    """symbol → logo.dev URL. 매핑에 없으면 빈 문자열(템플릿 onerror가 폴백)."""
+    domain = US_STOCK_DOMAINS.get(symbol)
+    if not domain:
+        return ""
+    return LOGO_API_URL.format(domain=domain, token=LOGO_API_TOKEN)
