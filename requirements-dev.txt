@@ -1,0 +1,5 @@
+# Dev/test dependencies — 로컬·테스트 CI에서만 설치
+-r requirements.txt
+
+pytest==9.1.1
+pytest-mock==3.15.1

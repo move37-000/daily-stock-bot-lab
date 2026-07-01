@@ -1,0 +1,60 @@
+name: Daily Stock Report
+
+on:
+  schedule:
+    - cron: '0 22 * * *'   # 매일 07:00 KST (UTC 22:00)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  generate-report:
+    runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Seoul   # Job 전체에 KST 적용 (앱은 zoneinfo로 별도 처리하나 로그/git date 정합용)
+
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: Python 설치
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # runtime 의존성만 설치 (dev 분리로 matplotlib/scipy/pytest 등 제외)
+      - name: 라이브러리 설치
+        run: pip install -r requirements.txt
+
+      # main() 파이프라인: 수집 → 조립 → 분석 → HTML 생성 → 알림
+      # HTML 생성 실패 시 fail-fast로 여기서 종료 → 이후 커밋/배포 스텝 미실행
+      - name: 리포트 생성 및 알림
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python run.py
+
+      - name: 리포트 커밋 및 푸시
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add reports/
+          git diff --staged --quiet || git commit -m "report: $(date +'%Y-%m-%d') 일일 리포트"
+          git push
+
+      - name: GitHub Pages 배포 준비
+        run: |
+          mkdir -p docs
+          latest_report=$(ls -t reports/*.html | head -1)
+          cp "$latest_report" docs/index.html
+
+      - name: GitHub Pages 배포
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          publish_branch: gh-pages

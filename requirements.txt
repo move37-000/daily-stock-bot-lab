@@ -1,8 +1,7 @@
-yfinance
-pandas
-requests
-google-genai
-python-dotenv
-Jinja2
-pytest
-pytest-mock
+# Runtime dependencies — 핀 고정으로 CI 재현성 확보
+google-genai==2.10.0
+Jinja2==3.1.6
+pandas==3.0.3
+python-dotenv==1.2.2
+requests==2.34.2
+yfinance==1.5.1  # 야후 비공식 API — 야후 변경으로 깨지면 수동 갱신 (README 참고)
