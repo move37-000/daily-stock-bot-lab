@@ -23,3 +23,12 @@ def _logo_url(symbol: str) -> str:
     if not domain:
         return ""
     return LOGO_API_URL.format(domain=domain, token=LOGO_API_TOKEN)
+
+
+def _index_view(index: IndexSnapshot) -> dict:
+    return {
+        "price": index.formatted_price,
+        "change": index.change,
+        "change_pct": index.formatted_change_pct,
+        "history": [dataclasses.asdict(p) for p in index.history],
+    }
