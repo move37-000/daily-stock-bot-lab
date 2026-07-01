@@ -5,6 +5,7 @@ from datetime import date
 
 from src.adapter.discord_notifier import DiscordNotifier
 from src.adapter.gemini_analyzer import GeminiAnalyzer
+from src.adapter.html_report_generator import generate_report
 from src.adapter.slack_notifier import SlackNotifier
 from src.adapter.yfinance_exchange_rate_fetcher import YFinanceExchangeRateFetcher
 from src.adapter.yfinance_fetcher import YFinanceFetcher
@@ -23,11 +24,6 @@ from src.config import (
     USD_KRW_PAIR,
     USD_KRW_SYMBOL,
 )
-from src.domain.market import MarketOverview
-from src.domain.report import DailyReport
-from src.domain.stock import Market
-from src.port.market_analyzer import MarketAnalyzer
-from src.port.notifier import Notifier
 from src.common.errors import AdapterError
 from src.domain.market import MarketOverview
 from src.domain.report import DailyReport
