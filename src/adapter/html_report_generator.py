@@ -65,3 +65,18 @@ def _market_view(market: MarketOverview) -> dict:
         "sp500": _index_view(market.primary),
         "nasdaq": _index_view(market.secondary),
     }
+
+
+def build_view_model(report: DailyReport) -> dict:
+    """DailyReport → 템플릿 렌더링용 dict 트리.
+
+    로그로 확정한 계약(us_market/us_stocks/us_market_news/usd_krw/ai_comment)에
+    1:1 대응한다. analysis(=ai_comment)는 None일 수 있고 템플릿이 조건 렌더한다.
+    """
+    return {
+        "us_market": _market_view(report.us_market),
+        "us_stocks": [_stock_view(s) for s in report.us_stocks],
+        "us_market_news": [dataclasses.asdict(n) for n in report.us_news],
+        "usd_krw": _exchange_view(report.exchange_rate),
+        "ai_comment": report.analysis,
+    }
