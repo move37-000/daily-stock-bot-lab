@@ -57,3 +57,11 @@ def _stock_view(stock: StockSnapshot) -> dict:
         "history": [{"date": d.date, "price": d.close} for d in stock.history],
         "news": [dataclasses.asdict(n) for n in stock.news],
     }
+
+
+def _market_view(market: MarketOverview) -> dict:
+    """primary/secondary(도메인) → sp500/nasdaq(템플릿 키)로 매핑."""
+    return {
+        "sp500": _index_view(market.primary),
+        "nasdaq": _index_view(market.secondary),
+    }
