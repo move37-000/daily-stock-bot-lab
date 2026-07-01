@@ -29,7 +29,7 @@ NEWS_LIMIT = 3    # 뉴스 조회 개수
 # =============================================================================
 US_TICKERS: dict[str, str] = {
     "MU": "Micron Technology, Inc.",
-    "NVDA": "Invesco QQQ Trust",
+    "NVDA": "NVIDIA Corporation",
     "TSM": "Taiwan Semiconductor Manufacturing Company Limited",
     "^SOX": "PHLX Semiconductor Index",
 }
