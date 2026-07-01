@@ -26,7 +26,7 @@ _KST = ZoneInfo("Asia/Seoul")
 _PROJECT_ROOT = Path(__file__).parent.parent.parent
 _REPORTS_DIR = _PROJECT_ROOT / "reports"
 _ENV = Environment(
-    loader=FileSystemLoader(_PROJECT_ROOT / "templates"),
+    loader=FileSystemLoader(_PROJECT_ROOT / "src/templates"),
     autoescape=True,
 )
 

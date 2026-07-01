@@ -2,7 +2,7 @@ import os
 
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(os.path.join(os.getcwd(), '.env'))
 
 # =============================================================================
 # Secrets (환경 변수)

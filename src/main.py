@@ -68,7 +68,7 @@ def main() -> None:
 
     if slack_notifier is None and discord_notifier is None:
         logger.error("Slack/Discord 모두 비활성. 알림 보낼 곳 없음.")
-        sys.exit(1)
+        # sys.exit(1)
 
     analyzer: MarketAnalyzer | None = None
     if GEMINI_API_KEY:
