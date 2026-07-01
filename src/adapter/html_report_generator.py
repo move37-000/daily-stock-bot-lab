@@ -32,3 +32,12 @@ def _index_view(index: IndexSnapshot) -> dict:
         "change_pct": index.formatted_change_pct,
         "history": [dataclasses.asdict(p) for p in index.history],
     }
+
+
+def _exchange_view(rate: ExchangeRate) -> dict:
+    return {
+        "price": rate.formatted_price,
+        "change": rate.change,
+        "change_pct": rate.formatted_change_pct,
+        "history": [dataclasses.asdict(p) for p in rate.history],
+    }
