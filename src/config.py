@@ -28,9 +28,10 @@ NEWS_LIMIT = 3    # 뉴스 조회 개수
 # 미국 주식 설정(임시)
 # =============================================================================
 US_TICKERS: dict[str, str] = {
-    "NVDA": "NVIDIA Corporation",
-    "QQQ": "Invesco QQQ Trust",
-    "SCHD": "Schwab US Dividend Equity ETF",
+    "MU": "Micron Technology, Inc.",
+    "NVDA": "Invesco QQQ Trust",
+    "TSM": "Taiwan Semiconductor Manufacturing Company Limited",
+    "^SOX": "PHLX Semiconductor Index",
 }
 
 # =============================================================================
