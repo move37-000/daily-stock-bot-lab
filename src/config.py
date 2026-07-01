@@ -15,7 +15,7 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 # GitHub Pages 설정
 # =============================================================================
 GITHUB_USERNAME = "move37-000"
-REPO_NAME = "Daily-Stock-Bot"
+REPO_NAME = "daily-stock-bot-lab"
 REPORT_URL = f"https://{GITHUB_USERNAME}.github.io/{REPO_NAME}/?v1=v"
 
 # =============================================================================
