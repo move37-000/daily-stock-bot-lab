@@ -2,7 +2,7 @@ import os
 
 from dotenv import load_dotenv
 
-load_dotenv(os.path.join(os.getcwd(), '.env'))
+load_dotenv()
 
 # =============================================================================
 # Secrets (환경 변수)
@@ -31,7 +31,6 @@ US_TICKERS: dict[str, str] = {
     "MU": "Micron Technology, Inc.",
     "NVDA": "NVIDIA Corporation",
     "TSM": "Taiwan Semiconductor Manufacturing Company Limited",
-    "^SOX": "PHLX Semiconductor Index",
 }
 
 # =============================================================================
@@ -62,9 +61,9 @@ GEMINI_MODELS = [
 # HTML 리포트용 (별도 작업에서 사용)
 # =============================================================================
 US_STOCK_DOMAINS: dict[str, str] = {
+    "MU": "micron.com",
     "NVDA": "nvidia.com",
-    "QQQ": "invesco.com",
-    "SCHD": "schwab.com",
+    "TSM": "tsmc.com",
 }
 
 LOGO_API_TOKEN = "pk_X-1ZO13GSgeOoUrIuJ6GMQ"

@@ -19,28 +19,6 @@ def build_prompt(report: DailyReport) -> str:
     exchange_line = _format_exchange(report.exchange_rate)
     us_summary = _format_stock_summary(report.us_stocks, top_n=3)
 
-    # return f"""넌 개인 투자자를 위한 주식 애널리스트야.
-    #
-    # 아래 데이터를 바탕으로 오늘 한국장 개장 전 시황 브리핑을 작성해줘.
-    #
-    # ## 데이터
-    #
-    # **미국장 (오늘 새벽 마감)**
-    # - S&P 500: {sp500_line}
-    # - NASDAQ: {nasdaq_line}
-    # - 환율 (USD/KRW): {exchange_line}
-    # - 주요 종목: {us_summary}
-    #
-    # ## 작성 규칙
-    # 1. 7-8문장으로 간결하게
-    # 2. 미국장 흐름 → 오늘 한국장 영향 전망 순서로
-    # 3. 세계 정세나 주요 뉴스가 시장에 미치는 영향을 함께 설명
-    # 4. 반말로 친근하게 ("~했어", "~될 것 같아")
-    # 5. 숫자는 이미 위에 있으니 반복하지 말고 흐름 위주로
-    # 6. 투자 권유가 아닌 정보 제공 목적
-    #
-    # 브리핑을 작성해줘."""
-
     return f"""넌 개인 투자자를 위한 반도체 섹터 애널리스트야.
 
     아래 데이터로 오늘 한국장 개장 전 시황 브리핑을 작성해.
@@ -60,7 +38,6 @@ def build_prompt(report: DailyReport) -> str:
     - MU (마이크론): 삼전·하닉 메모리 피어, 상관 최상
     - NVDA: HBM 수요 → 특히 하닉에 직접
     - TSM: 반도체 업황 전반 벨웨더
-    - SOX/SOXX: 섹터 베타·심리
 
     ## 분석 규칙
     1. 선행 신호를 근거로 오늘 대한민국 반도체 섹터(주요 종목: 삼성전자/SK하이닉스(메모리/HBM))의 방향을 추론해.

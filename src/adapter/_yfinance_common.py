@@ -42,24 +42,30 @@ def parse_yfinance_news(ticker: yf.Ticker, limit: int) -> list[NewsItem]:
     - StockFetcher: 뉴스 실패는 news=[]로 격리 (종목 전체 조회 실패 아님)
     - MarketNewsFetcher: 뉴스 실패는 []로 격리 (리포트 본체를 막지 않음)
     """
-    return [
-        NewsItem(
-            title=item.get("content", {}).get("title", ""),
-            link=_extract_news_link(item.get("content", {})),
-            publisher=(
-                item.get("content", {})
-                .get("provider", {})
-                .get("displayName", "")
-            ),
-            time=format_us_news_time(item.get("content", {}).get("pubDate", "")),
-        )
-        for item in ticker.news[:limit]
-    ]
+    return [_parse_news_item(item) for item in ticker.news[:limit]]
+
+
+def _parse_news_item(item: dict) -> NewsItem:
+    """단일 yfinance 뉴스 아이템 → NewsItem.
+
+    yfinance 응답은 키가 존재하되 값이 None인 경우가 있다(예: 페이월 기사의
+    clickThroughUrl=None). dict.get(k, {})의 기본값은 '키 부재'만 커버하고
+    'None 값'은 못 잡으므로, 중첩 dict는 `get(k) or {}`로 폴백한다.
+    """
+    content = item.get("content") or {}
+    return NewsItem(
+        title=content.get("title") or "",
+        link=_extract_news_link(content),
+        publisher=(content.get("provider") or {}).get("displayName", ""),
+        time=format_us_news_time(content.get("pubDate") or ""),
+    )
 
 
 def _extract_news_link(content: dict) -> str:
-    """yfinance 뉴스 응답에서 링크 추출. clickThroughUrl 우선, canonicalUrl 폴백."""
-    return (
-        content.get("clickThroughUrl", {}).get("url", "")
-        or content.get("canonicalUrl", {}).get("url", "")
-    )
+    """yfinance 뉴스 응답에서 링크 추출. clickThroughUrl 우선, canonicalUrl 폴백.
+
+    값이 None일 수 있어(페이월 기사 등) `get(k) or {}`로 방어한다.
+    """
+    click = content.get("clickThroughUrl") or {}
+    canonical = content.get("canonicalUrl") or {}
+    return click.get("url", "") or canonical.get("url", "")

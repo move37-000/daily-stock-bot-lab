@@ -2,7 +2,7 @@ name: Daily Stock Report
 
 on:
   schedule:
-    - cron: '0 22 * * *'   # 매일 07:00 KST (UTC 22:00)
+    - cron: '17 22 * * *'   # 매일 07:00 KST (UTC 22:00)
   workflow_dispatch:
 
 permissions:
