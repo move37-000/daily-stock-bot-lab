@@ -24,7 +24,7 @@ class DiscordNotifier(Notifier):
 
     def __init__(self, webhook_url: str, timeout: float = 10.0) -> None:
         if not webhook_url:
-            raise ValueError("Discord webhook_url이 비어있음.")
+            raise ValueError("Discord webhook_url이 비어있음...")
         self._webhook_url = webhook_url
         self._timeout = timeout
 

@@ -2,7 +2,7 @@ name: Daily Stock Report
 
 on:
   schedule:
-    - cron: '17 22 * * *'   # 매일 07:00 KST (UTC 22:00)
+    - cron: '18 22 * * *'   # 매일 07:30 KST (github action 지연시간 고려하여 07:22로 지정)
   workflow_dispatch:
 
 permissions:
