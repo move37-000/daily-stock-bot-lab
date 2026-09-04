@@ -4,7 +4,13 @@ import pandas as pd
 import requests
 import yfinance as yf
 
-from src.adapter._yfinance_common import calculate_change, parse_yfinance_news
+from src.adapter._yfinance_common import (
+    calculate_change,
+    has_nan_close,
+    parse_yfinance_news,
+    safe_history_metadata,
+)
+from src.common.diagnostics import dump_nan_incident
 from src.common.errors import NetworkError, ParseError
 from src.common.retry import retry
 from src.domain.news import NewsItem
@@ -23,6 +29,8 @@ class YFinanceFetcher(StockFetcher):
     NetworkError를 던진다.(전 종목 실패는 yfinance 연결 자체가 죽었다고 해석)
     @retry는 이 전체 실패에만 발동한다.
     """
+
+    _HISTORY_PERIOD = "5d"
 
     def __init__(self, news_limit: int = 3) -> None:
         self._news_limit = news_limit
