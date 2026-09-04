@@ -1,9 +1,13 @@
+import logging
+
 import pandas as pd
 import yfinance as yf
 
 from src.domain.market import PricePoint
 from src.common.date_utils import format_us_news_time
 from src.domain.news import NewsItem
+
+logger = logging.getLogger(__name__)
 
 
 def calculate_change(history: pd.DataFrame) -> tuple[float, float, float]:

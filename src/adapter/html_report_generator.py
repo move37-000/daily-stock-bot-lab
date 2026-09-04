@@ -50,7 +50,7 @@ def generate_report(report: DailyReport) -> str:
     )
 
     _REPORTS_DIR.mkdir(exist_ok=True)
-    file_path = _REPORTS_DIR / f"report_{report.date:%Y%m%d}_t1.html"
+    file_path = _REPORTS_DIR / f"report_{report.date:%Y%m%d}.html"
     file_path.write_text(html, encoding="utf-8")
     return str(file_path)
 
