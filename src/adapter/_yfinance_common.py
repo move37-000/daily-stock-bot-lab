@@ -37,6 +37,40 @@ def parse_price_history(history: pd.DataFrame) -> list[PricePoint]:
     ]
 
 
+def has_nan_close(history: pd.DataFrame) -> bool:
+    """history의 Close 컬럼에 NaN이 섞였는지.
+
+    야후가 간헐적으로 마지막 거래일 종가만 null로 내려보내는 사고를 감지한다.
+    yfinance의 keepna=False는 OHLCV가 **전부** NaN/0일 때만 행을 버리므로
+    (scrapers/history.py의 `.all(axis=1)`), Close만 깨진 행은 그대로 통과한다.
+    history.empty도 False가 되어 기존 방어선에 걸리지 않는다.
+
+    판정만 한다. 막을지 기록만 할지는 호출측 어댑터가 정한다.
+    """
+    if "Close" not in history.columns:
+        return False
+    return bool(history["Close"].isna().any())
+
+
+def safe_history_metadata(ticker: yf.Ticker) -> dict | None:
+    """ticker.history_metadata를 안전하게 읽는다. 실패하면 None.
+
+    야후가 그 시점 시장 상태를 뭐라고 인식했는지(regularMarketTime,
+    exchangeTimezoneName, currentTradingPeriod)가 담겨 있어 사고 분석에 쓸모가 있다.
+
+    try/except로 감싸는 이유: 캐시에 tradingPeriods가 없으면 이 프로퍼티가
+    **추가 네트워크 요청을 날린다**(yfinance/scrapers/history.py의 get_history_metadata).
+    야후가 이상하게 굴고 있는 바로 그 순간에 호출되므로 행·타임아웃 위험이 있다.
+    메타를 못 얻더라도 DataFrame 덤프는 반드시 남아야 하므로 여기서 격리한다.
+    """
+    try:
+        metadata = ticker.history_metadata
+    except Exception as e:
+        logger.warning(f"history_metadata 조회 실패: {e}")
+        return None
+    return metadata if isinstance(metadata, dict) else None
+
+
 def parse_yfinance_news(ticker: yf.Ticker, limit: int) -> list[NewsItem]:
     """yfinance Ticker에서 뉴스를 파싱해 NewsItem 리스트로 변환.
 
