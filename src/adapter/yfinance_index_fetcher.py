@@ -3,7 +3,13 @@ import logging
 import requests
 import yfinance as yf
 
-from src.adapter._yfinance_common import calculate_change, parse_price_history
+from src.adapter._yfinance_common import (
+    calculate_change,
+    has_nan_close,
+    parse_price_history,
+    safe_history_metadata,
+)
+from src.common.diagnostics import dump_nan_incident
 from src.common.errors import NetworkError, ParseError
 from src.common.retry import retry
 from src.domain.market import IndexSnapshot
@@ -31,9 +37,9 @@ class YFinanceIndexFetcher(IndexFetcher):
 
     @retry(max_attempts=3, delay=2.0)
     def fetch(self, symbol: str, name: str) -> IndexSnapshot:
+        period = f"{self._history_days + self._BUFFER_DAYS}d"
         try:
             ticker = yf.Ticker(symbol)
-            period = f"{self._history_days + self._BUFFER_DAYS}d"
             history = ticker.history(period=period)
         except requests.RequestException as e:
             raise NetworkError(f"yfinance 연결 실패 ({name}, {symbol})") from e
@@ -43,6 +49,18 @@ class YFinanceIndexFetcher(IndexFetcher):
             raise ParseError(
                 f"{name} ({symbol}) 지수 데이터 부족: {len(history)}일치"
             )
+
+        # record-only (§종목 어댑터와 동일). tail() 전에 검사해 버퍼 구간까지 덤프에 남긴다.
+        # 지수는 아직 NaN 사고가 난 적 없지만 같은 구멍이 있어 함께 계측한다.
+        if has_nan_close(history):
+            dump_path = dump_nan_incident(
+                source="index",
+                symbol=symbol,
+                period=period,
+                history=history,
+                extra=safe_history_metadata(ticker),
+            )
+            logger.warning(f"NaN 종가 감지 ({name}, {symbol}) — 덤프: {dump_path}")
 
         try:
             history = history.tail(self._history_days)
