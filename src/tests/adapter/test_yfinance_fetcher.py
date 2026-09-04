@@ -11,11 +11,15 @@
 DataFrame과 yfinance 뉴스 dict 생성 헬퍼를 분리했다. 각 테스트가
 중요한 차이만 짚을 수 있도록.
 """
+import json
+import math
+
 import pandas as pd
 import pytest
 import requests
 
 from src.adapter.yfinance_fetcher import YFinanceFetcher
+from src.common import diagnostics
 from src.common.errors import NetworkError
 from src.domain.stock import Market
 
@@ -292,3 +296,58 @@ class TestConstructorParameters:
         result = YFinanceFetcher(news_limit=2).fetch({"AAPL": "Apple"})
 
         assert len(result[0].news) == 2
+
+
+class TestNanDetection:
+    """야후가 마지막 거래일 종가만 null로 내려보내는 사고(2026-07-26, 09-03, 09-04) 계측.
+
+    record-only다 — 감지해도 막지 않는다. NaN은 지금까지처럼 그대로 리포트로 흘러가고,
+    증거 파일만 추가로 남는다. 이 동작이 의도된 것임을 고정한다.
+    """
+
+    @pytest.fixture(autouse=True)
+    def _debug_dir(self, tmp_path, monkeypatch):
+        target = tmp_path / "_debug"
+        monkeypatch.setattr(diagnostics, "_DEBUG_DIR", target)
+        return target
+
+    def _fetch_with_nan(self, mocker):
+        ticker = _make_ticker(mocker, history=_history_df([177.0, float("nan")]))
+        mocker.patch("src.adapter.yfinance_fetcher.yf.Ticker", return_value=ticker)
+        return YFinanceFetcher().fetch({"AAPL": "Apple"})
+
+    def test_NaN이어도_스냅샷은_그대로_반환(self, mocker):
+        """record-only — 막지 않는다. 가드를 넣을 땐 이 테스트가 먼저 깨져야 한다."""
+        result = self._fetch_with_nan(mocker)
+
+        assert len(result) == 1
+        assert math.isnan(result[0].close)
+
+    def test_덤프_파일_생성(self, mocker, _debug_dir):
+        self._fetch_with_nan(mocker)
+
+        dumps = list(_debug_dir.glob("*.json"))
+        assert len(dumps) == 1
+
+    def test_덤프_내용(self, mocker, _debug_dir):
+        self._fetch_with_nan(mocker)
+
+        payload = json.loads(
+            next(_debug_dir.glob("*.json")).read_text(encoding="utf-8")
+        )
+        assert payload["source"] == "stock"
+        assert payload["symbol"] == "AAPL"
+        # 어댑터가 실제로 요청한 period와 일치해야 한다 (덤프가 거짓말하면 안 됨).
+        assert payload["period_requested"] == YFinanceFetcher._HISTORY_PERIOD
+        # _history_df가 Close에서 OHL을 계산하므로 NaN이 네 컬럼 전부로 번진다.
+        # 실제 사고 형태(Close만 null)는 test_diagnostics.py가 명시적으로 재현한다.
+        assert "Close" in payload["nan_summary"]["columns_with_nan"]
+        assert payload["history"][-1]["Close"] is None
+
+    def test_정상_데이터면_덤프_안_남김(self, mocker, _debug_dir):
+        ticker = _make_ticker(mocker, history=_history_df([177.0, 178.5]))
+        mocker.patch("src.adapter.yfinance_fetcher.yf.Ticker", return_value=ticker)
+
+        YFinanceFetcher().fetch({"AAPL": "Apple"})
+
+        assert not _debug_dir.exists()

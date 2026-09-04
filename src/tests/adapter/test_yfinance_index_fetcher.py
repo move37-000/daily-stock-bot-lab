@@ -9,11 +9,15 @@
 지수 어댑터는 종목과 달리 단일 ticker 단위라 for-격리가 없다.
 실패는 fetch() 전체를 raise로 전파한다.
 """
+import json
+import math
+
 import pandas as pd
 import pytest
 import requests
 
 from src.adapter.yfinance_index_fetcher import YFinanceIndexFetcher
+from src.common import diagnostics
 from src.common.errors import NetworkError, ParseError
 
 
@@ -143,3 +147,57 @@ class TestParseFailure:
 
         with pytest.raises(ParseError, match="파싱 실패"):
             YFinanceIndexFetcher().fetch("^GSPC", "S&P 500")
+
+
+class TestNanDetection:
+    """지수는 아직 NaN 사고가 난 적 없지만 같은 구멍이 있어 함께 계측한다.
+
+    종목 어댑터와 동일하게 record-only.
+    """
+
+    @pytest.fixture(autouse=True)
+    def _debug_dir(self, tmp_path, monkeypatch):
+        target = tmp_path / "_debug"
+        monkeypatch.setattr(diagnostics, "_DEBUG_DIR", target)
+        return target
+
+    def _fetch_with_nan(self, mocker):
+        ticker = _make_ticker(mocker, history=_history_df([5180.0, float("nan")]))
+        mocker.patch(
+            "src.adapter.yfinance_index_fetcher.yf.Ticker", return_value=ticker
+        )
+        return YFinanceIndexFetcher().fetch("^GSPC", "S&P 500")
+
+    def test_NaN이어도_스냅샷은_그대로_반환(self, mocker):
+        result = self._fetch_with_nan(mocker)
+
+        assert math.isnan(result.price)
+
+    def test_덤프_생성_및_심볼_새니타이즈(self, mocker, _debug_dir):
+        self._fetch_with_nan(mocker)
+
+        dumps = list(_debug_dir.glob("*.json"))
+        assert len(dumps) == 1
+        # '^'는 파일명에 그대로 못 쓴다.
+        assert dumps[0].name.endswith("_index__GSPC.json")
+
+    def test_덤프_내용(self, mocker, _debug_dir):
+        self._fetch_with_nan(mocker)
+
+        payload = json.loads(
+            next(_debug_dir.glob("*.json")).read_text(encoding="utf-8")
+        )
+        assert payload["source"] == "index"
+        assert payload["symbol"] == "^GSPC"
+        # history_days(5) + _BUFFER_DAYS(2)
+        assert payload["period_requested"] == "7d"
+
+    def test_정상_데이터면_덤프_안_남김(self, mocker, _debug_dir):
+        ticker = _make_ticker(mocker, history=_history_df([5180.0, 5200.0]))
+        mocker.patch(
+            "src.adapter.yfinance_index_fetcher.yf.Ticker", return_value=ticker
+        )
+
+        YFinanceIndexFetcher().fetch("^GSPC", "S&P 500")
+
+        assert not _debug_dir.exists()

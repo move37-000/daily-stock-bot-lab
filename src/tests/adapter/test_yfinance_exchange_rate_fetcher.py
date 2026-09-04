@@ -8,11 +8,15 @@
 
 지수 어댑터와 평행 구조. 헬퍼·검증 패턴을 동일하게 둔다.
 """
+import json
+import math
+
 import pandas as pd
 import pytest
 import requests
 
 from src.adapter.yfinance_exchange_rate_fetcher import YFinanceExchangeRateFetcher
+from src.common import diagnostics
 from src.common.errors import NetworkError, ParseError
 
 
@@ -124,3 +128,54 @@ class TestParseFailure:
 
         with pytest.raises(ParseError, match="파싱 실패"):
             YFinanceExchangeRateFetcher().fetch()
+
+
+class TestNanDetection:
+    """지수 어댑터와 평행. record-only."""
+
+    @pytest.fixture(autouse=True)
+    def _debug_dir(self, tmp_path, monkeypatch):
+        target = tmp_path / "_debug"
+        monkeypatch.setattr(diagnostics, "_DEBUG_DIR", target)
+        return target
+
+    def _fetch_with_nan(self, mocker):
+        ticker = _make_ticker(mocker, history=_history_df([1335.0, float("nan")]))
+        mocker.patch(
+            "src.adapter.yfinance_exchange_rate_fetcher.yf.Ticker",
+            return_value=ticker,
+        )
+        return YFinanceExchangeRateFetcher().fetch()
+
+    def test_NaN이어도_스냅샷은_그대로_반환(self, mocker):
+        result = self._fetch_with_nan(mocker)
+
+        assert math.isnan(result.price)
+
+    def test_덤프_생성_및_심볼_새니타이즈(self, mocker, _debug_dir):
+        self._fetch_with_nan(mocker)
+
+        dumps = list(_debug_dir.glob("*.json"))
+        assert len(dumps) == 1
+        # 'USDKRW=X'의 '='
+        assert dumps[0].name.endswith("_exchange_USDKRW_X.json")
+
+    def test_덤프_내용(self, mocker, _debug_dir):
+        self._fetch_with_nan(mocker)
+
+        payload = json.loads(
+            next(_debug_dir.glob("*.json")).read_text(encoding="utf-8")
+        )
+        assert payload["source"] == "exchange"
+        assert payload["period_requested"] == "7d"
+
+    def test_정상_데이터면_덤프_안_남김(self, mocker, _debug_dir):
+        ticker = _make_ticker(mocker, history=_history_df([1335.0, 1340.5]))
+        mocker.patch(
+            "src.adapter.yfinance_exchange_rate_fetcher.yf.Ticker",
+            return_value=ticker,
+        )
+
+        YFinanceExchangeRateFetcher().fetch()
+
+        assert not _debug_dir.exists()
