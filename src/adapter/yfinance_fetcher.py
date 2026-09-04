@@ -60,7 +60,7 @@ class YFinanceFetcher(StockFetcher):
         # 구별할 수 없어 @retry가 5xx 재시도와 4xx 즉시 포기를 못 가른다.
         try:
             ticker = yf.Ticker(symbol)
-            history = ticker.history(period="5d")
+            history = ticker.history(period=self._HISTORY_PERIOD)
         except requests.RequestException as e:
             raise NetworkError(f"yfinance 연결 실패 ({symbol})") from e
 
@@ -68,6 +68,18 @@ class YFinanceFetcher(StockFetcher):
             # 빈 DataFrame은 yfinance의 "데이터 없음" 의미, ParseError가 아니다
             logger.warning(f"미국 주식 데이터 없음: {symbol}")
             return None
+
+        # record-only. 막지 않고 증거만 남기고 그대로 진행한다 — NaN은 그대로
+        # 리포트까지 흘러간다. 원인 규명 후 가드 여부를 별도로 판단한다.
+        if has_nan_close(history):
+            dump_path = dump_nan_incident(
+                source="stock",
+                symbol=symbol,
+                period=self._HISTORY_PERIOD,
+                history=history,
+                extra=safe_history_metadata(ticker),
+            )
+            logger.warning(f"NaN 종가 감지 ({symbol}) — 덤프: {dump_path}")
 
         try:
             stock_daily = self._parse_history(history)
