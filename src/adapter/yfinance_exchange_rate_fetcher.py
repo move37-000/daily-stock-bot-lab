@@ -1,11 +1,21 @@
+import logging
+
 import requests
 import yfinance as yf
 
-from src.adapter._yfinance_common import calculate_change, parse_price_history
+from src.adapter._yfinance_common import (
+    calculate_change,
+    has_nan_close,
+    parse_price_history,
+    safe_history_metadata,
+)
+from src.common.diagnostics import dump_nan_incident
 from src.common.errors import NetworkError, ParseError
 from src.common.retry import retry
 from src.domain.market import ExchangeRate
 from src.port.exchange_rate_fetcher import ExchangeRateFetcher
+
+logger = logging.getLogger(__name__)
 
 
 class YFinanceExchangeRateFetcher(ExchangeRateFetcher):
@@ -32,9 +42,9 @@ class YFinanceExchangeRateFetcher(ExchangeRateFetcher):
 
     @retry(max_attempts=3, delay=2.0)
     def fetch(self) -> ExchangeRate:
+        period = f"{self._history_days + self._BUFFER_DAYS}d"
         try:
             ticker = yf.Ticker(self._symbol)
-            period = f"{self._history_days + self._BUFFER_DAYS}d"
             history = ticker.history(period=period)
         except requests.RequestException as e:
             raise NetworkError(f"yfinance 연결 실패 ({self._pair}, {self._symbol})") from e
@@ -43,6 +53,19 @@ class YFinanceExchangeRateFetcher(ExchangeRateFetcher):
             # 데이터 부족은 재시도해도 같은 결과 → ParseError로 즉시 실패.
             raise ParseError(
                 f"{self._pair} ({self._symbol}) 환율 데이터 부족: {len(history)}일치"
+            )
+
+        # record-only (§종목 어댑터와 동일). tail() 전에 검사한다.
+        if has_nan_close(history):
+            dump_path = dump_nan_incident(
+                source="exchange",
+                symbol=self._symbol,
+                period=period,
+                history=history,
+                extra=safe_history_metadata(ticker),
+            )
+            logger.warning(
+                f"NaN 종가 감지 ({self._pair}, {self._symbol}) — 덤프: {dump_path}"
             )
 
         try:
