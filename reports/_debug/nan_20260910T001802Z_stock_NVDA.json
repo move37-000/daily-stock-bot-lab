@@ -1,0 +1,155 @@
+{
+  "detected_at": {
+    "utc": "2026-09-10T00:18:02.601898+00:00",
+    "kst": "2026-09-10T09:18:02.601898+09:00",
+    "et": "2026-09-09T20:18:02.601898-04:00"
+  },
+  "source": "stock",
+  "symbol": "NVDA",
+  "period_requested": "5d",
+  "versions": {
+    "yfinance": "1.5.1",
+    "pandas": "3.0.3"
+  },
+  "github": {
+    "run_id": "34420668220",
+    "run_number": "80",
+    "run_attempt": "1",
+    "event_name": "schedule",
+    "workflow": "Daily Stock Report"
+  },
+  "nan_summary": {
+    "row_count": 5,
+    "columns_with_nan": [
+      "Open",
+      "High",
+      "Low",
+      "Close"
+    ],
+    "nan_row_dates": [
+      "2026-09-09T00:00:00-04:00"
+    ]
+  },
+  "history": [
+    {
+      "date": "2026-09-02T00:00:00-04:00",
+      "Open": 218.7899932861328,
+      "High": 227.9499969482422,
+      "Low": 218.47999572753906,
+      "Close": 224.41000366210938,
+      "Volume": 157104700,
+      "Dividends": 0.0,
+      "Stock Splits": 0.0
+    },
+    {
+      "date": "2026-09-03T00:00:00-04:00",
+      "Open": 226.02000427246094,
+      "High": 230.39999389648438,
+      "Low": 224.75,
+      "Close": 228.4499969482422,
+      "Volume": 134681600,
+      "Dividends": 0.0,
+      "Stock Splits": 0.0
+    },
+    {
+      "date": "2026-09-04T00:00:00-04:00",
+      "Open": 231.08999633789062,
+      "High": 234.75999450683594,
+      "Low": 229.6300048828125,
+      "Close": 230.36000061035156,
+      "Volume": 135352400,
+      "Dividends": 0.0,
+      "Stock Splits": 0.0
+    },
+    {
+      "date": "2026-09-08T00:00:00-04:00",
+      "Open": 233.11000061035156,
+      "High": 233.7100067138672,
+      "Low": 224.85000610351562,
+      "Close": 225.72999572753906,
+      "Volume": 122965600,
+      "Dividends": 0.0,
+      "Stock Splits": 0.0
+    },
+    {
+      "date": "2026-09-09T00:00:00-04:00",
+      "Open": null,
+      "High": null,
+      "Low": null,
+      "Close": null,
+      "Volume": 79204871,
+      "Dividends": 0.0,
+      "Stock Splits": 0.0
+    }
+  ],
+  "history_metadata": {
+    "currency": "USD",
+    "symbol": "NVDA",
+    "exchangeName": "NMS",
+    "fullExchangeName": "NasdaqGS",
+    "instrumentType": "EQUITY",
+    "firstTradeDate": 917015400,
+    "regularMarketTime": 1788984000,
+    "hasPrePostMarketData": true,
+    "gmtoffset": -14400,
+    "timezone": "EDT",
+    "exchangeTimezoneName": "America/New_York",
+    "regularMarketPrice": 223.67,
+    "regularMarketChangePercent": -0.913,
+    "fulldayPrice": 223.41,
+    "fulldayChange": -2.32,
+    "fulldayChangePercent": -1.028,
+    "fiftyTwoWeekHigh": 236.54,
+    "fiftyTwoWeekLow": 164.27,
+    "regularMarketDayHigh": 226.18,
+    "regularMarketDayLow": 223.46,
+    "regularMarketVolume": 79204871,
+    "longName": "NVIDIA Corporation",
+    "shortName": "NVIDIA Corporation",
+    "chartPreviousClose": 217.44,
+    "previousClose": 225.73,
+    "scale": 3,
+    "priceHint": 2,
+    "currentTradingPeriod": {
+      "pre": {
+        "timezone": "EDT",
+        "start": 1788940800,
+        "end": 1788960600,
+        "gmtoffset": -14400
+      },
+      "regular": {
+        "timezone": "EDT",
+        "start": 1788960600,
+        "end": 1788984000,
+        "gmtoffset": -14400
+      },
+      "post": {
+        "timezone": "EDT",
+        "start": 1788984000,
+        "end": 1788998400,
+        "gmtoffset": -14400
+      }
+    },
+    "tradingPeriods": "                                          pre_start  ...                  post_end\nDate                                                 ...                          \n2026-09-02 00:00:00-04:00 2026-09-02 04:00:00-04:00  ... 2026-09-02 20:00:00-04:00\n2026-09-03 00:00:00-04:00 2026-09-03 04:00:00-04:00  ... 2026-09-03 20:00:00-04:00\n2026-09-04 00:00:00-04:00 2026-09-04 04:00:00-04:00  ... 2026-09-04 20:00:00-04:00\n2026-09-08 00:00:00-04:00 2026-09-08 04:00:00-04:00  ... 2026-09-08 20:00:00-04:00\n2026-09-09 00:00:00-04:00 2026-09-09 04:00:00-04:00  ... 2026-09-09 20:00:00-04:00\n\n[5 rows x 6 columns]",
+    "dataGranularity": "1h",
+    "range": "5d",
+    "validRanges": [
+      "1d",
+      "5d",
+      "1mo",
+      "3mo",
+      "6mo",
+      "1y",
+      "2y",
+      "5y",
+      "10y",
+      "ytd",
+      "max"
+    ],
+    "YF repair?": false,
+    "lastTrade": {
+      "Price": 223.6699,
+      "Time": "2026-09-09 19:59:51-04:00"
+    }
+  }
+}
