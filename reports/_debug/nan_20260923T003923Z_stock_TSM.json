@@ -1,0 +1,155 @@
+{
+  "detected_at": {
+    "utc": "2026-09-23T00:39:23.308233+00:00",
+    "kst": "2026-09-23T09:39:23.308233+09:00",
+    "et": "2026-09-22T20:39:23.308233-04:00"
+  },
+  "source": "stock",
+  "symbol": "TSM",
+  "period_requested": "5d",
+  "versions": {
+    "yfinance": "1.5.1",
+    "pandas": "3.0.3"
+  },
+  "github": {
+    "run_id": "35802965049",
+    "run_number": "93",
+    "run_attempt": "1",
+    "event_name": "schedule",
+    "workflow": "Daily Stock Report"
+  },
+  "nan_summary": {
+    "row_count": 5,
+    "columns_with_nan": [
+      "Open",
+      "High",
+      "Low",
+      "Close"
+    ],
+    "nan_row_dates": [
+      "2026-09-22T00:00:00-04:00"
+    ]
+  },
+  "history": [
+    {
+      "date": "2026-09-16T00:00:00-04:00",
+      "Open": 418.20001220703125,
+      "High": 419.8500061035156,
+      "Low": 413.8800048828125,
+      "Close": 417.7200012207031,
+      "Volume": 10490900,
+      "Dividends": 1.107,
+      "Stock Splits": 0.0
+    },
+    {
+      "date": "2026-09-17T00:00:00-04:00",
+      "Open": 424.3999938964844,
+      "High": 430.5299987792969,
+      "Low": 423.3900146484375,
+      "Close": 430.260009765625,
+      "Volume": 12447700,
+      "Dividends": 0.0,
+      "Stock Splits": 0.0
+    },
+    {
+      "date": "2026-09-18T00:00:00-04:00",
+      "Open": 429.0400085449219,
+      "High": 434.82000732421875,
+      "Low": 428.9800109863281,
+      "Close": 434.6700134277344,
+      "Volume": 12905100,
+      "Dividends": 0.0,
+      "Stock Splits": 0.0
+    },
+    {
+      "date": "2026-09-21T00:00:00-04:00",
+      "Open": 440.79998779296875,
+      "High": 445.7200012207031,
+      "Low": 437.05999755859375,
+      "Close": 445.1400146484375,
+      "Volume": 9943100,
+      "Dividends": 0.0,
+      "Stock Splits": 0.0
+    },
+    {
+      "date": "2026-09-22T00:00:00-04:00",
+      "Open": null,
+      "High": null,
+      "Low": null,
+      "Close": null,
+      "Volume": 11225312,
+      "Dividends": 0.0,
+      "Stock Splits": 0.0
+    }
+  ],
+  "history_metadata": {
+    "currency": "USD",
+    "symbol": "TSM",
+    "exchangeName": "NYQ",
+    "fullExchangeName": "NYSE",
+    "instrumentType": "EQUITY",
+    "firstTradeDate": 876403800,
+    "regularMarketTime": 1790107202,
+    "hasPrePostMarketData": true,
+    "gmtoffset": -14400,
+    "timezone": "EDT",
+    "exchangeTimezoneName": "America/New_York",
+    "regularMarketPrice": 452.0,
+    "regularMarketChangePercent": 1.541,
+    "fulldayPrice": 450.88,
+    "fulldayChange": 5.74,
+    "fulldayChangePercent": 1.289,
+    "fiftyTwoWeekHigh": 479.0,
+    "fiftyTwoWeekLow": 266.82,
+    "regularMarketDayHigh": 452.88,
+    "regularMarketDayLow": 441.2,
+    "regularMarketVolume": 11225312,
+    "longName": "Taiwan Semiconductor Manufacturing Company Limited",
+    "shortName": "Taiwan Semiconductor Manufactur",
+    "chartPreviousClose": 413.75,
+    "previousClose": 445.14,
+    "scale": 3,
+    "priceHint": 2,
+    "currentTradingPeriod": {
+      "pre": {
+        "timezone": "EDT",
+        "start": 1790064000,
+        "end": 1790083800,
+        "gmtoffset": -14400
+      },
+      "regular": {
+        "timezone": "EDT",
+        "start": 1790083800,
+        "end": 1790107200,
+        "gmtoffset": -14400
+      },
+      "post": {
+        "timezone": "EDT",
+        "start": 1790107200,
+        "end": 1790121600,
+        "gmtoffset": -14400
+      }
+    },
+    "tradingPeriods": "                                          pre_start  ...                  post_end\nDate                                                 ...                          \n2026-09-16 00:00:00-04:00 2026-09-16 04:00:00-04:00  ... 2026-09-16 20:00:00-04:00\n2026-09-17 00:00:00-04:00 2026-09-17 04:00:00-04:00  ... 2026-09-17 20:00:00-04:00\n2026-09-18 00:00:00-04:00 2026-09-18 04:00:00-04:00  ... 2026-09-18 20:00:00-04:00\n2026-09-21 00:00:00-04:00 2026-09-21 04:00:00-04:00  ... 2026-09-21 20:00:00-04:00\n2026-09-22 00:00:00-04:00 2026-09-22 04:00:00-04:00  ... 2026-09-22 20:00:00-04:00\n\n[5 rows x 6 columns]",
+    "dataGranularity": "1h",
+    "range": "5d",
+    "validRanges": [
+      "1d",
+      "5d",
+      "1mo",
+      "3mo",
+      "6mo",
+      "1y",
+      "2y",
+      "5y",
+      "10y",
+      "ytd",
+      "max"
+    ],
+    "YF repair?": false,
+    "lastTrade": {
+      "Price": 451.4134,
+      "Time": "2026-09-22 19:59:07-04:00"
+    }
+  }
+}
