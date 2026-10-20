@@ -1,0 +1,155 @@
+{
+  "detected_at": {
+    "utc": "2026-10-20T01:06:44.945527+00:00",
+    "kst": "2026-10-20T10:06:44.945527+09:00",
+    "et": "2026-10-19T21:06:44.945527-04:00"
+  },
+  "source": "stock",
+  "symbol": "MU",
+  "period_requested": "5d",
+  "versions": {
+    "yfinance": "1.5.1",
+    "pandas": "3.0.3"
+  },
+  "github": {
+    "run_id": "39351550856",
+    "run_number": "120",
+    "run_attempt": "1",
+    "event_name": "schedule",
+    "workflow": "Daily Stock Report"
+  },
+  "nan_summary": {
+    "row_count": 5,
+    "columns_with_nan": [
+      "Open",
+      "High",
+      "Low",
+      "Close"
+    ],
+    "nan_row_dates": [
+      "2026-10-19T00:00:00-04:00"
+    ]
+  },
+  "history": [
+    {
+      "date": "2026-10-13T00:00:00-04:00",
+      "Open": 933.9230520539426,
+      "High": 953.4499477068184,
+      "Low": 928.8838669557448,
+      "Close": 953.0400390625,
+      "Volume": 29227200,
+      "Dividends": 0.0,
+      "Stock Splits": 0.0
+    },
+    {
+      "date": "2026-10-14T00:00:00-04:00",
+      "Open": 934.5599975585938,
+      "High": 949.4199829101562,
+      "Low": 913.5599975585938,
+      "Close": 914.1300048828125,
+      "Volume": 27843700,
+      "Dividends": 0.15,
+      "Stock Splits": 0.0
+    },
+    {
+      "date": "2026-10-15T00:00:00-04:00",
+      "Open": 871.5800170898438,
+      "High": 931.6500244140625,
+      "Low": 858.0,
+      "Close": 931.239990234375,
+      "Volume": 39095100,
+      "Dividends": 0.0,
+      "Stock Splits": 0.0
+    },
+    {
+      "date": "2026-10-16T00:00:00-04:00",
+      "Open": 905.489990234375,
+      "High": 907.5,
+      "Low": 875.0,
+      "Close": 878.8400268554688,
+      "Volume": 30293300,
+      "Dividends": 0.0,
+      "Stock Splits": 0.0
+    },
+    {
+      "date": "2026-10-19T00:00:00-04:00",
+      "Open": null,
+      "High": null,
+      "Low": null,
+      "Close": null,
+      "Volume": 25566435,
+      "Dividends": 0.0,
+      "Stock Splits": 0.0
+    }
+  ],
+  "history_metadata": {
+    "currency": "USD",
+    "symbol": "MU",
+    "exchangeName": "NMS",
+    "fullExchangeName": "NasdaqGS",
+    "instrumentType": "EQUITY",
+    "firstTradeDate": 454944600,
+    "regularMarketTime": 1792440000,
+    "hasPrePostMarketData": true,
+    "gmtoffset": -14400,
+    "timezone": "EDT",
+    "exchangeTimezoneName": "America/New_York",
+    "regularMarketPrice": 904.9,
+    "regularMarketChangePercent": 2.965,
+    "fulldayPrice": 888.51,
+    "fulldayChange": 9.67,
+    "fulldayChangePercent": 1.1,
+    "fiftyTwoWeekHigh": 1255.0,
+    "fiftyTwoWeekLow": 192.4,
+    "regularMarketDayHigh": 926.81,
+    "regularMarketDayLow": 900.6,
+    "regularMarketVolume": 25566435,
+    "longName": "Micron Technology, Inc.",
+    "shortName": "Micron Technology, Inc.",
+    "chartPreviousClose": 989.04,
+    "previousClose": 878.84,
+    "scale": 3,
+    "priceHint": 2,
+    "currentTradingPeriod": {
+      "pre": {
+        "timezone": "EDT",
+        "end": 1792416600,
+        "start": 1792396800,
+        "gmtoffset": -14400
+      },
+      "regular": {
+        "timezone": "EDT",
+        "end": 1792440000,
+        "start": 1792416600,
+        "gmtoffset": -14400
+      },
+      "post": {
+        "timezone": "EDT",
+        "end": 1792454400,
+        "start": 1792440000,
+        "gmtoffset": -14400
+      }
+    },
+    "tradingPeriods": "                                          pre_start  ...                  post_end\nDate                                                 ...                          \n2026-10-13 00:00:00-04:00 2026-10-13 04:00:00-04:00  ... 2026-10-13 20:00:00-04:00\n2026-10-14 00:00:00-04:00 2026-10-14 04:00:00-04:00  ... 2026-10-14 20:00:00-04:00\n2026-10-15 00:00:00-04:00 2026-10-15 04:00:00-04:00  ... 2026-10-15 20:00:00-04:00\n2026-10-16 00:00:00-04:00 2026-10-16 04:00:00-04:00  ... 2026-10-16 20:00:00-04:00\n2026-10-19 00:00:00-04:00 2026-10-19 04:00:00-04:00  ... 2026-10-19 20:00:00-04:00\n\n[5 rows x 6 columns]",
+    "dataGranularity": "1h",
+    "range": "5d",
+    "validRanges": [
+      "1d",
+      "5d",
+      "1mo",
+      "3mo",
+      "6mo",
+      "1y",
+      "2y",
+      "5y",
+      "10y",
+      "ytd",
+      "max"
+    ],
+    "YF repair?": false,
+    "lastTrade": {
+      "Price": 905.26,
+      "Time": "2026-10-19 19:59:57-04:00"
+    }
+  }
+}
